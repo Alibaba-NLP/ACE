@@ -264,7 +264,6 @@ The config files are based on yaml format.
   * `enhancedud`: semantic dependency parsing/enhanced universal dependency parsing
 * `ner`: An example for the `targets`. If `targets: ner`, then the code will read the values with the key of `ner`.
   * `Corpus`: The training corpora for the model, use `:` to split different corpora.
-  * `teachers`: The teacher models for training, values are the config files and the values of these config files are the teaching corpora (split by `:`).
   * `tag_dictionary`: A path to the tag dictionary for the task. If the path does not exist, the code will generate a tag dictionary at the path automatically.
 * `target_dir`: Save directory.
 * `model_name`: The trained models will be save in `$target_dir/$model_name`.
