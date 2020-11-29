@@ -280,6 +280,16 @@ The config files are based on yaml format.
 ## TODO
 * Knowledge Distillation with ACE: [Wang et al., 2020](https://github.com/wangxinyu0922/MultilangStructureKD)
 
+## Citing Us
+If you feel the code helpful, please cite:
+```
+@article{wang2020automated,
+  title={Automated Concatenation of Embeddings for Structured Prediction},
+  author={Wang, Xinyu and Jiang, Yong and Bach, Nguyen and Wang, Tao and Huang, Zhongqiang and Huang, Fei and Tu, Kewei},
+  journal={arXiv preprint arXiv:2010.05006},
+  year={2020}
+}
+```
 
 ## Contact 
 
