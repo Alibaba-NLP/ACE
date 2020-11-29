@@ -1,0 +1,101 @@
+ModelFinetuner:
+  distill_mode: false
+  sentence_level_batch: true
+anneal_factor: 2
+ast:
+  Corpus: SEMEVAL16-TR:SEMEVAL16-ES:SEMEVAL16-NL:SEMEVAL16-EN:SEMEVAL16-RU
+atis:
+  Corpus: ATIS-EN:ATIS-TR:ATIS-HI
+chunk:
+  Corpus: CONLL_03:CONLL_03_GERMAN
+embeddings:
+  BertEmbeddings-0:
+    bert_model_or_path: bert-base-cased
+    fine_tune: true
+    layers: '-1'
+    pooling_operation: mean
+interpolation: 0.5
+is_teacher_list: true
+model:
+  FastSequenceTagger:
+    crf_attention: false
+    dropout: 0.0
+    hidden_size: 256
+    locked_dropout: 0.0
+    sentence_loss: true
+    use_cnn: false
+    use_crf: false
+    use_rnn: false
+    word_dropout: 0.1
+model_name: en-bert_10epoch_32batch_0.00005lr_10000lrrate_en_monolingual_nocrf_fast_sentbatch_sentloss_finetune_saving_nodev_newner4
+ner:
+  Corpus: CONLL_03_NEW
+  professors:
+    config/single-de-ner.yaml: CONLL_03_GERMAN
+    config/single-en-ner.yaml: CONLL_03
+    config/single-es-ner.yaml: CONLL_03_SPANISH
+    config/single-nl-ner.yaml: CONLL_03_DUTCH
+  tag_dictionary: resources/taggers/ner_tags.pkl
+  teachers:
+    ? config_gen/multi_bert_origflair_300epoch_2000batch_1lr_256hidden_de_monolingual_nocrf_sentloss_10patience_baseline_fast_nodev_ner11.yaml
+    : CONLL_03_GERMAN
+    ? config_gen/multi_bert_origflair_300epoch_2000batch_1lr_256hidden_en_monolingual_nocrf_sentloss_10patience_baseline_fast_nodev_ner11.yaml
+    : CONLL_03
+    ? config_gen/multi_bert_origflair_300epoch_2000batch_1lr_256hidden_es_monolingual_nocrf_sentloss_10patience_baseline_fast_nodev_ner11.yaml
+    : CONLL_03_SPANISH
+    ? config_gen/multi_bert_origflair_300epoch_2000batch_1lr_256hidden_nl_monolingual_nocrf_sentloss_10patience_baseline_fast_nodev_ner11.yaml
+    : CONLL_03_DUTCH
+target_dir: resources/taggers/
+targets: ner
+teacher_annealing: false
+train:
+  fine_tune_mode: true
+  learning_rate: 5.0e-05
+  lr_rate: 10000
+  max_epochs: 10
+  mini_batch_size: 32
+  monitor_test: false
+  save_final_model: false
+  save_finetuned_embedding: true
+  train_with_dev: false
+  true_reshuffle: false
+trainer: ModelFinetuner
+upos:
+  Corpus: UD_GERMAN:UD_ENGLISH:UD_FRENCH:UD_ITALIAN:UD_DUTCH:UD_SPANISH:UD_PORTUGUESE:UD_JAPANESE
+  UD_GERMAN:
+    train_config: config/
+  professors:
+    ? config_gen/multi_bert_origflair_300epoch_2000batch_1lr_400hidden_de_monolingual_nocrf_sentloss_10patience_baseline_fast_nodev_upos0.yaml
+    : UD_GERMAN
+    ? config_gen/multi_bert_origflair_300epoch_2000batch_1lr_400hidden_en_monolingual_nocrf_sentloss_10patience_baseline_fast_nodev_upos0.yaml
+    : UD_ENGLISH
+    ? config_gen/multi_bert_origflair_300epoch_2000batch_1lr_400hidden_es_monolingual_nocrf_sentloss_10patience_baseline_fast_nodev_upos0.yaml
+    : UD_SPANISH
+    ? config_gen/multi_bert_origflair_300epoch_2000batch_1lr_400hidden_fr_monolingual_nocrf_sentloss_10patience_baseline_fast_nodev_upos1.yaml
+    : UD_FRENCH
+    ? config_gen/multi_bert_origflair_300epoch_2000batch_1lr_400hidden_it_monolingual_nocrf_sentloss_10patience_baseline_fast_nodev_upos1.yaml
+    : UD_ITALIAN
+    ? config_gen/multi_bert_origflair_300epoch_2000batch_1lr_400hidden_ja_monolingual_nocrf_sentloss_10patience_baseline_fast_nodev_upos1.yaml
+    : UD_JAPANESE
+    ? config_gen/multi_bert_origflair_300epoch_2000batch_1lr_400hidden_nl_monolingual_nocrf_sentloss_10patience_baseline_fast_nodev_upos1.yaml
+    : UD_DUTCH
+    ? config_gen/multi_bert_origflair_300epoch_2000batch_1lr_400hidden_pt_monolingual_nocrf_sentloss_10patience_baseline_fast_nodev_upos0.yaml
+    : UD_PORTUGUESE
+  tag_dictionary: resources/taggers/pos_tags.pkl
+  teachers:
+    ? config_gen/multi_bert_origflair_300epoch_2000batch_1lr_400hidden_de_monolingual_nocrf_sentloss_10patience_baseline_fast_nodev_upos0.yaml
+    : UD_GERMAN
+    ? config_gen/multi_bert_origflair_300epoch_2000batch_1lr_400hidden_en_monolingual_nocrf_sentloss_10patience_baseline_fast_nodev_upos0.yaml
+    : UD_ENGLISH
+    ? config_gen/multi_bert_origflair_300epoch_2000batch_1lr_400hidden_es_monolingual_nocrf_sentloss_10patience_baseline_fast_nodev_upos0.yaml
+    : UD_SPANISH
+    ? config_gen/multi_bert_origflair_300epoch_2000batch_1lr_400hidden_fr_monolingual_nocrf_sentloss_10patience_baseline_fast_nodev_upos1.yaml
+    : UD_FRENCH
+    ? config_gen/multi_bert_origflair_300epoch_2000batch_1lr_400hidden_it_monolingual_nocrf_sentloss_10patience_baseline_fast_nodev_upos1.yaml
+    : UD_ITALIAN
+    ? config_gen/multi_bert_origflair_300epoch_2000batch_1lr_400hidden_ja_monolingual_nocrf_sentloss_10patience_baseline_fast_nodev_upos1.yaml
+    : UD_JAPANESE
+    ? config_gen/multi_bert_origflair_300epoch_2000batch_1lr_400hidden_nl_monolingual_nocrf_sentloss_10patience_baseline_fast_nodev_upos1.yaml
+    : UD_DUTCH
+    ? config_gen/multi_bert_origflair_300epoch_2000batch_1lr_400hidden_pt_monolingual_nocrf_sentloss_10patience_baseline_fast_nodev_upos0.yaml
+    : UD_PORTUGUESE

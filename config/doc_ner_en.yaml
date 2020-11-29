@@ -1,0 +1,93 @@
+Controller:
+  model_structure: null
+ReinforcementTrainer:
+  assign_doc_id: true
+  controller_learning_rate: 0.1
+  controller_optimizer: SGD
+  distill_mode: false
+  optimizer: SGD
+  pretrained_file_dict:
+    bert-base-cased: bert-base-cased.hdf5
+    xlm-roberta-large-finetuned-conll03-english: xlm-roberta-large-finetuned-conll03-english.hdf5
+    bert-base-multilingual-cased: bert-base-multilingual-cased.hdf5
+    bert-large-cased: bert-large-cased.hdf5
+    xlnet-large-cased: xlnet-large-cased.hdf5
+  sentence_level_batch: true
+anneal_factor: 2
+embeddings:
+  ELMoEmbeddings-0:
+    model: original
+    # options_file: elmo_2x4096_512_2048cnn_2xhighway_options.json
+    # weight_file: elmo_2x4096_512_2048cnn_2xhighway_weights.hdf5
+  FastCharacterEmbeddings:
+    char_embedding_dim: 25
+    hidden_size_char: 25
+  FastWordEmbeddings-0:
+    embeddings: glove
+    freeze: true
+  FastWordEmbeddings-1:
+    embeddings: en
+    freeze: true
+  FlairEmbeddings-0:
+    model: en-forward
+  FlairEmbeddings-1:
+    model: en-backward
+  FlairEmbeddings-2:
+    model: multi-forward
+  FlairEmbeddings-3:
+    model: multi-backward
+  TransformerWordEmbeddings-0:
+    layers: -1,-2,-3,-4
+    model: xlnet-large-cased
+    pooling_operation: first
+  TransformerWordEmbeddings-1:
+    layers: '-1'
+    model: xlm-roberta-large-finetuned-conll03-english
+    pooling_operation: mean
+  TransformerWordEmbeddings-2:
+    layers: -1,-2,-3,-4
+    model: bert-large-cased
+    pooling_operation: mean
+  TransformerWordEmbeddings-3:
+    layers: -1,-2,-3,-4
+    model: bert-base-cased
+    pooling_operation: mean
+  TransformerWordEmbeddings-4:
+    layers: -1,-2,-3,-4
+    model: bert-base-multilingual-cased
+    pooling_operation: mean
+interpolation: 0.5
+is_teacher_list: true
+model:
+  FastSequenceTagger:
+    crf_attention: false
+    dropout: 0.0
+    hidden_size: 800
+    sentence_loss: true
+    use_crf: true
+model_name: xlnet-four-pred_en-xlmr-tuned-pred_elmo_bert-four-large-pred_bert-four-old-pred_multi-bert-four-pred_word-glove_word_flair_mflair_char_30episode_150epoch_32batch_0.1lr_800hidden_eng_crf_fast_reinforce_freeze_norelearn_sentbatch_5patience_nodev_ner4
+ner:
+  Corpus: CONLL_03_ENGLISH
+  professors:
+    config/single-de-ner.yaml: CONLL_03_GERMAN
+    config/single-en-ner.yaml: CONLL_03
+    config/single-es-ner.yaml: CONLL_03_SPANISH
+    config/single-nl-ner.yaml: CONLL_03_DUTCH
+  tag_dictionary: resources/taggers/ner_tags.pkl
+target_dir: resources/taggers/
+targets: ner
+teacher_annealing: false
+train:
+  controller_momentum: 0.9
+  learning_rate: 0.1
+  max_episodes: 30
+  max_epochs: 150
+  max_epochs_without_improvement: 25
+  mini_batch_size: 32
+  monitor_test: false
+  patience: 5
+  save_final_model: false
+  train_with_dev: false
+  true_reshuffle: false
+  use_warmup: false
+trainer: ReinforcementTrainer

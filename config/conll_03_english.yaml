@@ -1,0 +1,77 @@
+Controller:
+  model_structure: null
+ReinforcementTrainer:
+  controller_learning_rate: 0.1
+  controller_optimizer: SGD
+  distill_mode: false
+  optimizer: SGD
+  sentence_level_batch: true
+embeddings:
+  TransformerWordEmbeddings-1:
+    model: bert-base-cased
+    layers: -1,-2,-3,-4
+    pooling_operation: mean
+  TransformerWordEmbeddings-2:
+    model: bert-base-multilingual-cased
+    layers: -1,-2,-3,-4
+    pooling_operation: mean
+  ELMoEmbeddings-0:
+    model: original
+    # options_file: elmo_2x4096_512_2048cnn_2xhighway_options.json
+    # weight_file: elmo_2x4096_512_2048cnn_2xhighway_weights.hdf5
+  FastCharacterEmbeddings:
+    char_embedding_dim: 25
+    hidden_size_char: 25
+  FastWordEmbeddings-0:
+    embeddings: glove
+    freeze: true
+  FastWordEmbeddings-1:
+    embeddings: en
+    freeze: true
+  FlairEmbeddings-0:
+    model: en-forward
+  FlairEmbeddings-1:
+    model: en-backward
+  FlairEmbeddings-2:
+    model: multi-forward
+  FlairEmbeddings-3:
+    model: multi-backward
+  TransformerWordEmbeddings-0: 
+    layers: '-1'
+    pooling_operation: first
+    model: xlm-roberta-large-finetuned-conll03-english
+interpolation: 0.5
+model:
+  FastSequenceTagger:
+    crf_attention: false
+    dropout: 0.0
+    hidden_size: 800
+    sentence_loss: true
+    use_crf: true
+model_name: en-xlmr-tuned-first_elmo_bert-old-four_multi-bert-four_word-glove_word_origflair_mflair_char_30episode_150epoch_32batch_0.1lr_800hidden_en_monolingual_crf_fast_reinforce_freeze_norelearn_sentbatch_0.5discount_0.9momentum_5patience_nodev_newner5
+ner:
+  Corpus: CONLL_03
+  tag_dictionary: resources/taggers/ner_tags.pkl
+target_dir: resources/taggers/
+targets: ner
+train:
+  controller_momentum: 0.9
+  discount: 0.5
+  learning_rate: 0.1
+  max_episodes: 30
+  max_epochs: 150
+  max_epochs_without_improvement: 25
+  mini_batch_size: 32
+  monitor_test: false
+  patience: 5
+  save_final_model: false
+  train_with_dev: false
+  true_reshuffle: false
+trainer: ReinforcementTrainer
+
+ast:
+  Corpus: SEMEVAL16-TR:SEMEVAL16-ES:SEMEVAL16-NL:SEMEVAL16-EN:SEMEVAL16-RU
+atis:
+  Corpus: ATIS-EN:ATIS-TR:ATIS-HI
+chunk:
+  Corpus: CONLL_03:CONLL_03_GERMAN

@@ -1,0 +1,68 @@
+ModelFinetuner:
+  direct_upsample_rate: -1
+  distill_mode: false
+  down_sample_amount: -1
+  ensemble_distill_mode: false
+  language_resample: false
+dependency:
+  Corpus: PTB
+embeddings:
+  BertEmbeddings-0:
+    bert_model_or_path: bert-base-cased
+    fine_tune: true
+    layers: '-1'
+    pooling_operation: mean
+enhancedud:
+  Corpus: UD_English-EWT
+is_teacher_list: true
+is_toy: false
+model:
+  SemanticDependencyParser:
+    binary: false
+    dropout: 0.0
+    factorize: true
+    hidden_size: 400
+    init_std: 0.25
+    interpolation: 0.5
+    iterations: 3
+    locked_dropout: 0.0
+    lstm_dropout: 0.33
+    mlp_dropout: 0.33
+    n_mlp_arc: 500
+    n_mlp_rel: 100
+    n_mlp_sec: 150
+    rnn_layers: 3
+    tree: false
+    use_cop: true
+    use_crf: false
+    use_gp: true
+    use_rnn: false
+    use_second_order: false
+    use_sib: true
+    word_dropout: 0.1
+model_name: en-bert_10epoch_0.5inter_2000batch_0.00005lr_20lrrate_ptb_monolingual_nocrf_fast_warmup_freezing_beta_weightdecay_finetune_saving_nodev_dependency16
+srl:
+  Corpus: SRL-EN
+target_dir: resources/taggers/
+targets: dependency
+teacher_annealing: false
+train:
+  betas:
+  - 0.9
+  - 0.99
+  fine_tune_mode: true
+  freezing: true
+  learning_rate: 5.0e-05
+  lr_rate: 20
+  max_epochs: 10
+  min_freq: 2
+  mini_batch_size: 2000
+  monitor_test: false
+  save_final_model: false
+  save_finetuned_embedding: true
+  sort_data: true
+  train_with_dev: false
+  true_reshuffle: false
+  use_warmup: true
+  weight_decay: 0.01
+trainer: ModelFinetuner
