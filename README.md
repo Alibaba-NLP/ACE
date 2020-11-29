@@ -277,7 +277,7 @@ The config files are based on yaml format.
 * `train`: the parameters for the `train` function in `trainer` (for example, `ReinforcementTrainer.train()`).
 
 ## TODO
-* Knowledge Distillation with ACE: [Wang et al., 2020](https://github.com/wangxinyu0922/MultilangStructureKD)
+* Knowledge Distillation with ACE: [Wang et al., 2020](https://github.com/Alibaba-NLP/MultilangStructureKD)
 
 ## Citing Us
 If you feel the code helpful, please cite:
