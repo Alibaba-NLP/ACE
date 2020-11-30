@@ -84,8 +84,8 @@ config = ConfigParser(config,all=args.all,zero_shot=args.zeroshot,other_shot=arg
 # pdb.set_trace()
 
 
-model=config.create_student()
-log.info(f"Model Size: {count_parameters(model)}")
+student=config.create_student(nocrf=args.nocrf)
+log.info(f"Model Size: {count_parameters(student)}")
 corpus=config.corpus
 
 
@@ -116,11 +116,11 @@ if not args.test and config.config[trainer_name]['distill_mode']:
 	teachers=teacher_func()
 	professors=[]
 	# corpus=config.distill_teachers_prediction()
-	trainer: trainer_func = trainer_func(model, teachers, corpus, config=config.config, professors=professors,**config.config[trainer_name])
+	trainer: trainer_func = trainer_func(student, teachers, corpus, config=config.config, professors=professors,**config.config[trainer_name])
 elif not args.parse:
-	trainer: trainer_func = trainer_func(model, None, corpus, config=config.config, **config.config[trainer_name], is_test=args.test)
+	trainer: trainer_func = trainer_func(student, None, corpus, config=config.config, **config.config[trainer_name], is_test=args.test)
 else:
-	trainer: trainer_func = trainer_func(model, None, corpus, config=config.config, **config.config[trainer_name], is_test=args.test)
+	trainer: trainer_func = trainer_func(student, None, corpus, config=config.config, **config.config[trainer_name], is_test=args.test)
 
 # pdb.set_trace()
 
@@ -137,20 +137,20 @@ if int(args.batch_size)>0:
 	eval_mini_batch_size = int(args.batch_size)
 
 if args.test_speed:
-	model.eval()
+	student.eval()
 	# pdb.set_trace()
-	print(count_parameters(model))
-	# for embedding in model.embeddings.embeddings:
+	print(count_parameters(student))
+	# for embedding in student.embeddings.embeddings:
 	# 	embedding.training = False
-	test_loader=ColumnDataLoader(list(trainer.corpus.test),32,use_bert=trainer.use_bert,tokenizer=trainer.bert_tokenizer, sort_data=False, model = model, sentence_level_batch = True)
-	test_loader.assign_tags(model.tag_type,model.tag_dictionary)
-	train_eval_result, train_loss = model.evaluate(test_loader,embeddings_storage_mode='none',speed_test=True)
+	test_loader=ColumnDataLoader(list(trainer.corpus.test),32,use_bert=trainer.use_bert,tokenizer=trainer.bert_tokenizer, sort_data=False, model = student, sentence_level_batch = True)
+	test_loader.assign_tags(student.tag_type,student.tag_dictionary)
+	train_eval_result, train_loss = student.evaluate(test_loader,embeddings_storage_mode='none',speed_test=True)
 	# print('Current accuracy: ' + str(train_eval_result.main_score*100))
 	# print(train_eval_result.detailed_results)
 	
 
 elif args.test:
-	model.eval()
+	student.eval()
 	trainer.embeddings_storage_mode = 'cpu'
 	trainer.final_test(
 		config.get_target_path,
@@ -169,34 +169,34 @@ elif args.parse or args.save_embedding:
 	if (base_path / "best-model.pt").exists():
 		print('Loading pretraining best model')
 		if trainer_name == 'ReinforcementTrainer':
-			model = model.load(base_path / "best-model.pt", device='cpu')
-			for name, module in model.named_modules():
+			student = student.load(base_path / "best-model.pt", device='cpu')
+			for name, module in student.named_modules():
 				if 'embeddings' in name or name == '':
 					continue
 				else:
 					module.to(flair.device)
-			for name, module in model.named_parameters():
+			for name, module in student.named_parameters():
 				module.to(flair.device)
 		else:
-			model = model.load(base_path / "best-model.pt")
+			student = student.load(base_path / "best-model.pt")
 		
 	elif (base_path / "final-model.pt").exists():
 		print('Loading pretraining final model')
-		model = model.load(base_path / "final-model.pt")
+		student = student.load(base_path / "final-model.pt")
 	else:
 		assert 0, str(base_path)+ ' not exist!'
 	if trainer_name == 'ReinforcementTrainer':
 		import torch
 		training_state = torch.load(base_path/'training_state.pt')
 		start_episode = training_state['episode']
-		model.selection = training_state['best_action']
-		name_list=sorted([x.name for x in model.embeddings.embeddings])
+		student.selection = training_state['best_action']
+		name_list=sorted([x.name for x in student.embeddings.embeddings])
 		print(name_list)
-		print(f"Setting embedding mask to the best action: {model.selection}")
-		embedlist = sorted([(embedding.name, embedding) for embedding in model.embeddings.embeddings], key = lambda x: x[0])
+		print(f"Setting embedding mask to the best action: {student.selection}")
+		embedlist = sorted([(embedding.name, embedding) for embedding in student.embeddings.embeddings], key = lambda x: x[0])
 		for idx, embedding_tuple in enumerate(embedlist):
 			embedding = embedding_tuple[1]
-			if model.selection[idx] == 1:
+			if student.selection[idx] == 1:
 				embedding.to(flair.device)
 				if 'elmo' in embedding.name:
 					# embedding.reset_elmo()
@@ -210,41 +210,41 @@ elif args.parse or args.save_embedding:
 			else:
 				embedding.to('cpu')
 				
-		for name, module in model.named_modules():
+		for name, module in student.named_modules():
 			if 'embeddings' in name or name == '':
 				continue
 			else:
 				module.to(flair.device)
-		parameters = [x for x in model.named_parameters()]
+		parameters = [x for x in student.named_parameters()]
 		for parameter in parameters:
 			name = parameter[0]
 			module = parameter[1]
 			module.data.to(flair.device)
 			if '.' not in name:
-				if type(getattr(model, name))==torch.nn.parameter.Parameter:
-					setattr(model, name, torch.nn.parameter.Parameter(getattr(model,name).to(flair.device)))
+				if type(getattr(student, name))==torch.nn.parameter.Parameter:
+					setattr(student, name, torch.nn.parameter.Parameter(getattr(student,name).to(flair.device)))
 		# pdb.set_trace()
 		
 	if args.save_embedding:
-		for embedding in model.embeddings.embeddings:
+		for embedding in student.embeddings.embeddings:
 			if hasattr(embedding,'fine_tune') and embedding.fine_tune: 
 				if not os.path.exists(base_path/embedding.name.split('/')[-1]):
 					os.mkdir(base_path/embedding.name.split('/')[-1])
 				embedding.tokenizer.save_pretrained(base_path/embedding.name.split('/')[-1])
 				embedding.model.save_pretrained(base_path/embedding.name.split('/')[-1])
 		exit()
-	if not hasattr(model,'use_bert'):
-		model.use_bert=False
-	if hasattr(model,'word_map'):
-		word_map = model.word_map
+	if not hasattr(student,'use_bert'):
+		student.use_bert=False
+	if hasattr(student,'word_map'):
+		word_map = student.word_map
 	else:
 		word_map = None
-	if hasattr(model,'char_map'):
-		char_map = model.char_map
+	if hasattr(student,'char_map'):
+		char_map = student.char_map
 	else:
 		char_map = None
 	if args.mst:
-		model.is_mst=True
+		student.is_mst=True
 	if args.parse_train_and_dev:
 
 		print('Current Model: ', config.config['model_name'])
@@ -257,9 +257,9 @@ elif args.parse or args.save_embedding:
 			if len(subcorpus)==0:
 				continue
 			print('Current Lang: ', corpus.targets[index])
-			loader=ColumnDataLoader(list(subcorpus),eval_mini_batch_size,use_bert=model.use_bert, model = model, sort_data = not args.keep_order)
-			loader.assign_tags(model.tag_type,model.tag_dictionary)
-			train_eval_result, train_loss = model.evaluate(loader,embeddings_storage_mode='none',
+			loader=ColumnDataLoader(list(subcorpus),eval_mini_batch_size,use_bert=student.use_bert, model = student, sort_data = not args.keep_order, sentence_level_batch = config.config[trainer_name]['sentence_level_batch'] if 'sentence_level_batch' in config.config[trainer_name] else True)
+			loader.assign_tags(student.tag_type,student.tag_dictionary)
+			train_eval_result, train_loss = student.evaluate(loader,embeddings_storage_mode='none',
 				out_path=Path('system_pred/dev.'+config.config['model_name']+'.conllu'),)
 			print('Current accuracy: ' + str(train_eval_result.main_score*100))
 			print(train_eval_result.detailed_results)
@@ -270,15 +270,29 @@ elif args.parse or args.save_embedding:
 			if len(subcorpus)==0:
 				continue
 			print('Current Lang: ', corpus.targets[index])
-			loader=ColumnDataLoader(list(subcorpus),eval_mini_batch_size,use_bert=model.use_bert, model = model, sort_data = not args.keep_order)
-			loader.assign_tags(model.tag_type,model.tag_dictionary)
-			train_eval_result, train_loss = model.evaluate(
+			loader=ColumnDataLoader(list(subcorpus),eval_mini_batch_size,use_bert=student.use_bert, model = student, sort_data = not args.keep_order, sentence_level_batch = config.config[trainer_name]['sentence_level_batch'] if 'sentence_level_batch' in config.config[trainer_name] else True)
+			loader.assign_tags(student.tag_type,student.tag_dictionary)
+			train_eval_result, train_loss = student.evaluate(
 				loader,
 				embeddings_storage_mode='none',
 				out_path=Path('system_pred/train.'+config.config['model_name']+'.conllu'),
 			)
 			print('Current accuracy: ' + str(train_eval_result.main_score*100))
 			print(train_eval_result.detailed_results)
+		# print('Current Set: ', 'train+dev')
+		# for index, subcorpus in enumerate(corpus.train_list):
+		# 	# log_line(log)
+		# 	# log.info('current corpus: '+self.corpus.targets[index])
+		# 	print('Current Lang: ', corpus.targets[index])
+		# 	loader=ColumnDataLoader(list(subcorpus)+list(corpus.dev_list[index]),eval_mini_batch_size,use_bert=student.use_bert, model = student, sort_data = not args.keep_order)
+		# 	loader.assign_tags(student.tag_type,student.tag_dictionary)
+		# 	train_eval_result, train_loss = student.evaluate(
+		# 		loader,
+		# 		embeddings_storage_mode='none',
+		# 		out_path=Path('outputs/train.'+config.config['model_name']+'.'+tar_file_name+'.conllu'),
+		# 	)
+		# 	print('Current accuracy: ' + str(train_eval_result.main_score*100))
+		# 	print(train_eval_result.detailed_results)
 		print('Current Set: ', 'test')
 		for index, subcorpus in enumerate(corpus.test_list):
 			# log_line(log)
@@ -286,9 +300,9 @@ elif args.parse or args.save_embedding:
 			if len(subcorpus)==0:
 				continue
 			print('Current Lang: ', corpus.targets[index])
-			loader=ColumnDataLoader(list(subcorpus),eval_mini_batch_size,use_bert=model.use_bert, model = model, sort_data = not args.keep_order)
-			loader.assign_tags(model.tag_type,model.tag_dictionary)
-			train_eval_result, train_loss = model.evaluate(
+			loader=ColumnDataLoader(list(subcorpus),eval_mini_batch_size,use_bert=student.use_bert, model = student, sort_data = not args.keep_order, sentence_level_batch = config.config[trainer_name]['sentence_level_batch'] if 'sentence_level_batch' in config.config[trainer_name] else True)
+			loader.assign_tags(student.tag_type,student.tag_dictionary)
+			train_eval_result, train_loss = student.evaluate(
 				loader,
 				embeddings_storage_mode='none',
 				out_path=Path('system_pred/test.'+config.config['model_name']+'.conllu'),
@@ -302,7 +316,7 @@ elif args.parse or args.save_embedding:
 				tar_dir=os.path.join(args.target_dir,file_dir)
 				if not os.path.isdir(tar_dir):
 					continue
-				if model.tag_type=='dependency':
+				if student.tag_type=='dependency':
 					corpus=datasets.UniversalDependenciesCorpus(tar_dir,add_root=True,spliter=args.spliter)
 				else:
 					corpus=datasets.ColumnCorpus(tar_dir, column_format={0: 'text', 1:'ner'}, tag_to_bioes='ner')
@@ -310,35 +324,35 @@ elif args.parse or args.save_embedding:
 				print('Parsing the file: '+tar_file_name)
 				write_name='outputs/train.'+config.config['model_name']+'.'+tar_file_name+'.conllu'
 				print('Writing to file: '+write_name)
-				loader=ColumnDataLoader(list(corpus.train),eval_mini_batch_size,use_bert=model.use_bert, model = model, sort_data = not args.keep_order)
-				loader.assign_tags(model.tag_type,model.tag_dictionary)
-				train_eval_result, train_loss = model.evaluate(loader,out_path=Path(write_name),embeddings_storage_mode="none",prediction_mode=True)
+				loader=ColumnDataLoader(list(corpus.train),eval_mini_batch_size,use_bert=student.use_bert, model = student, sort_data = not args.keep_order, sentence_level_batch = config.config[trainer_name]['sentence_level_batch'] if 'sentence_level_batch' in config.config[trainer_name] else True)
+				loader.assign_tags(student.tag_type,student.tag_dictionary)
+				train_eval_result, train_loss = student.evaluate(loader,out_path=Path(write_name),embeddings_storage_mode="none",prediction_mode=True)
 				if train_eval_result is not None:
 					print('Current accuracy: ' + str(train_eval_result.main_score*100))
 					print(train_eval_result.detailed_results)
 		else:
-			if model.tag_type=='dependency' or model.tag_type=='enhancedud':
+			if student.tag_type=='dependency' or student.tag_type=='enhancedud':
 				corpus=datasets.UniversalDependenciesCorpus(args.target_dir,add_root=True,spliter=args.spliter)
 			else:
 				corpus=datasets.ColumnCorpus(args.target_dir, column_format={0: 'text', 1:'ner'}, tag_to_bioes='ner')
 			tar_file_name = str(Path(args.target_dir)).split('/')[-1]
-			loader=ColumnDataLoader(list(corpus.train),eval_mini_batch_size,use_bert=model.use_bert, model = model, sort_data = not args.keep_order)
-			loader.assign_tags(model.tag_type,model.tag_dictionary)
-			train_eval_result, train_loss = model.evaluate(loader,out_path=Path('outputs/train.'+config.config['model_name']+'.'+tar_file_name+'.conllu'),embeddings_storage_mode="none",prediction_mode=True)
+			loader=ColumnDataLoader(list(corpus.train),eval_mini_batch_size,use_bert=student.use_bert, model = student, sort_data = not args.keep_order, sentence_level_batch = config.config[trainer_name]['sentence_level_batch'] if 'sentence_level_batch' in config.config[trainer_name] else True)
+			loader.assign_tags(student.tag_type,student.tag_dictionary)
+			train_eval_result, train_loss = student.evaluate(loader,out_path=Path('outputs/train.'+config.config['model_name']+'.'+tar_file_name+'.conllu'),embeddings_storage_mode="none",prediction_mode=True)
 			if train_eval_result is not None:
 				print('Current accuracy: ' + str(train_eval_result.main_score*100))
 				print(train_eval_result.detailed_results)
 	elif args.parse_test:
-		loader=ColumnDataLoader(list(corpus.test),eval_mini_batch_size,use_bert=model.use_bert, model = model, sort_data = not args.keep_order)
-		loader.assign_tags(model.tag_type,model.tag_dictionary)
-		train_eval_result, train_loss = model.evaluate(loader,out_path=Path('system_pred/test.'+config.config['model_name']+'.conllu'),embeddings_storage_mode="none",prediction_mode=True)
+		loader=ColumnDataLoader(list(corpus.test),eval_mini_batch_size,use_bert=student.use_bert, model = student, sort_data = not args.keep_order, sentence_level_batch = config.config[trainer_name]['sentence_level_batch'] if 'sentence_level_batch' in config.config[trainer_name] else True)
+		loader.assign_tags(student.tag_type,student.tag_dictionary)
+		train_eval_result, train_loss = student.evaluate(loader,out_path=Path('system_pred/test.'+config.config['model_name']+'.conllu'),embeddings_storage_mode="none",prediction_mode=True)
 		if train_eval_result is not None:
 			print('Current accuracy: ' + str(train_eval_result.main_score*100))
 			print(train_eval_result.detailed_results)
 	else:
-		loader=ColumnDataLoader(list(corpus.train),eval_mini_batch_size,use_bert=model.use_bert, model = model, sort_data = not args.keep_order)
-		loader.assign_tags(model.tag_type,model.tag_dictionary)
-		train_eval_result, train_loss = model.evaluate(loader,out_path=Path('outputs/train.'+config.config['model_name']+'.'+corpus.targets[0]+'.conllu'),embeddings_storage_mode="none",prediction_mode=True)
+		loader=ColumnDataLoader(list(corpus.train),eval_mini_batch_size,use_bert=student.use_bert, model = student, sort_data = not args.keep_order, sentence_level_batch = config.config[trainer_name]['sentence_level_batch'] if 'sentence_level_batch' in config.config[trainer_name] else True)
+		loader.assign_tags(student.tag_type,student.tag_dictionary)
+		train_eval_result, train_loss = student.evaluate(loader,out_path=Path('outputs/train.'+config.config['model_name']+'.'+corpus.targets[0]+'.conllu'),embeddings_storage_mode="none",prediction_mode=True)
 		if train_eval_result is not None:
 			print('Current accuracy: ' + str(train_eval_result.main_score*100))
 			print(train_eval_result.detailed_results)
