@@ -7,8 +7,8 @@ ReinforcementTrainer:
   distill_mode: false
   optimizer: SGD
   pretrained_file_dict:
-    bert-spanish-cased-finetuned-ner: bert-spanish-cased-finetuned-ner.hdf5
-    xlm-roberta-large-finetuned-conll02-spanish: xlm-roberta-large-finetuned-conll02-spanish.hdf5
+    /home/yongjiang.jy/.flair/embeddings/bert-spanish-cased-finetuned-ner: bert-spanish-cased-finetuned-ner.hdf5
+    /home/yongjiang.jy/.flair/embeddings/xlm-roberta-large-finetuned-conll02-spanish: xlm-roberta-large-finetuned-conll02-spanish.hdf5
     bert-base-multilingual-cased: bert-base-multilingual-cased.hdf5
   sentence_level_batch: true
 anneal_factor: 2
@@ -34,10 +34,12 @@ embeddings:
     layers: '-1'
     model: xlm-roberta-large-finetuned-conll02-spanish
     pooling_operation: first
+    embedding_name: /home/yongjiang.jy/.flair/embeddings/xlm-roberta-large-finetuned-conll02-spanish # DO NOT modify this when using the downloaded models. You can remove if you want to train the model
   TransformerWordEmbeddings-1:
     layers: -1,-2,-3,-4
     model: bert-spanish-cased-finetuned-ner
     pooling_operation: first
+    embedding_name: /home/yongjiang.jy/.flair/embeddings/bert-spanish-cased-finetuned-ner # DO NOT modify this when using the downloaded models. You can remove if you want to train the model
   TransformerWordEmbeddings-2:
     layers: -1,-2,-3,-4
     model: bert-base-multilingual-cased

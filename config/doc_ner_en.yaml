@@ -7,8 +7,8 @@ ReinforcementTrainer:
   distill_mode: false
   optimizer: SGD
   pretrained_file_dict:
-    bert-base-cased: bert-base-cased.hdf5
-    xlm-roberta-large-finetuned-conll03-english: xlm-roberta-large-finetuned-conll03-english.hdf5
+    /home/yongjiang.jy/.cache/torch/transformers/bert-base-cased: bert-base-cased.hdf5
+    /home/yongjiang.jy/.flair/embeddings/xlm-roberta-large-finetuned-conll03-english: xlm-roberta-large-finetuned-conll03-english.hdf5
     bert-base-multilingual-cased: bert-base-multilingual-cased.hdf5
     bert-large-cased: bert-large-cased.hdf5
     xlnet-large-cased: xlnet-large-cased.hdf5
@@ -44,6 +44,7 @@ embeddings:
     layers: '-1'
     model: xlm-roberta-large-finetuned-conll03-english
     pooling_operation: mean
+    embedding_name: /home/yongjiang.jy/.flair/embeddings/xlm-roberta-large-finetuned-conll03-english # DO NOT modify this when using the downloaded models. You can remove if you want to train the model
   TransformerWordEmbeddings-2:
     layers: -1,-2,-3,-4
     model: bert-large-cased
@@ -52,6 +53,7 @@ embeddings:
     layers: -1,-2,-3,-4
     model: bert-base-cased
     pooling_operation: mean
+    embedding_name: /home/yongjiang.jy/.cache/torch/transformers/bert-base-cased # DO NOT modify this when using the downloaded models. You can remove if you want to train the model
   TransformerWordEmbeddings-4:
     layers: -1,-2,-3,-4
     model: bert-base-multilingual-cased

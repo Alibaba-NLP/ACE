@@ -1128,8 +1128,8 @@ class ModelDistiller(ModelTrainer):
 					log.info(f"{embedding.pooling_operation}")
 				if selection is not None:
 					if selection[idx] == 0:
+						log.info(f"{embedding.name} is not selected, Skipping")
 						continue
-					log.info(f"{embedding.name} is not selected, Skipping")
 				embedding.to(flair.device)
 				if 'elmo' in embedding.name:
 					# embedding.reset_elmo()

@@ -11,14 +11,16 @@ ReinforcementTrainer:
 dependency:
   Corpus: PTB
 embeddings:
-  BertEmbeddings-2:
-    bert_model_or_path: bert-base-cased
+  TransformerWordEmbeddings-2:
+    model: bert-base-cased
     layers: '-1'
     pooling_operation: mean
-  BertEmbeddings-3:
-    bert_model_or_path: bert-base-multilingual-cased
+    embedding_name: /home/yongjiang.jy/.flair/embeddings/en-bert_10epoch_0.5inter_1000batch_0.00005lr_20lrrate_ptb_monolingual_nocrf_fast_warmup_freezing_beta_weightdecay_finetune_saving_nodev_dependency16/bert-base-cased # DO NOT modify this when using the downloaded models. You can remove if you want to train the model
+  TransformerWordEmbeddings-3:
+    model: bert-base-multilingual-cased
     layers: '-1'
     pooling_operation: mean
+    embedding_name: /home/yongjiang.jy/.flair/embeddings/multi-bert_10epoch_0.5inter_2000batch_0.00005lr_20lrrate_ptb_monolingual_nocrf_fast_warmup_freezing_beta_weightdecay_finetune_saving_nodev_dependency16/bert-base-multilingual-cased # DO NOT modify this when using the downloaded models. You can remove if you want to train the model
   ELMoEmbeddings-0:
     model: original
     # options_file: elmo_2x4096_512_2048cnn_2xhighway_options.json
@@ -37,13 +39,15 @@ embeddings:
     model: en-forward
   FlairEmbeddings-3:
     model: en-backward
-  XLMRoBERTaEmbeddings-1:
+  TransformerWordEmbeddings-1:
     layers: '-1'
     pooling_operation: mean
-    pretrained_model_name_or_path: xlmr_10epoch_0.5inter_500batch_0.00005lr_20lrrate_ptb_monolingual_nocrf_fast_warmup_freezing_beta_weightdecay_finetune_saving_nodev_dependency16/xlm-roberta-large
-  XLNetEmbeddings-0:
+    model: xlmr_10epoch_0.5inter_500batch_0.00005lr_20lrrate_ptb_monolingual_nocrf_fast_warmup_freezing_beta_weightdecay_finetune_saving_nodev_dependency16/xlm-roberta-large
+    embedding_name: /home/yongjiang.jy/.flair/embeddings/xlmr_10epoch_0.5inter_500batch_0.00005lr_20lrrate_ptb_monolingual_nocrf_fast_warmup_freezing_beta_weightdecay_finetune_saving_nodev_dependency16/xlm-roberta-large # DO NOT modify this when using the downloaded models. You can remove if you want to train the model
+  TransformerWordEmbeddings-0:
     layers: '-1'
-    pretrained_model_name_or_path: xlnet_10epoch_0.5inter_500batch_0.00005lr_20lrrate_ptb_monolingual_nocrf_fast_warmup_freezing_beta_weightdecay_finetune_saving_nodev_dependency15/xlnet-large-cased
+    model: xlnet_10epoch_0.5inter_500batch_0.00005lr_20lrrate_ptb_monolingual_nocrf_fast_warmup_freezing_beta_weightdecay_finetune_saving_nodev_dependency15/xlnet-large-cased
+    embedding_name: /home/yongjiang.jy/.flair/embeddings/xlnet_10epoch_0.5inter_500batch_0.00005lr_20lrrate_ptb_monolingual_nocrf_fast_warmup_freezing_beta_weightdecay_finetune_saving_nodev_dependency15/xlnet-large-cased # DO NOT modify this when using the downloaded models. You can remove if you want to train the model
 enhancedud:
   Corpus: UD_English-EWT
 is_teacher_list: true

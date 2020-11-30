@@ -11,6 +11,7 @@ embeddings:
     model: bert-base-cased
     layers: -1,-2,-3,-4
     pooling_operation: mean
+    embedding_name: /home/yongjiang.jy/.cache/torch/transformers/bert-base-cased
   TransformerWordEmbeddings-2:
     model: bert-base-multilingual-cased
     layers: -1,-2,-3,-4
@@ -40,6 +41,7 @@ embeddings:
     layers: '-1'
     pooling_operation: first
     model: xlm-roberta-large-finetuned-conll03-english
+    embedding_name: /home/yongjiang.jy/.flair/embeddings/xlm-roberta-large-finetuned-conll03-english
 interpolation: 0.5
 model:
   FastSequenceTagger:

@@ -409,7 +409,7 @@ class WordEmbeddings(TokenEmbeddings):
 class FastWordEmbeddings(TokenEmbeddings):
     """Standard Fine Tune word embeddings, such as GloVe or FastText."""
 
-    def __init__(self, embeddings: str, all_tokens: list, field: str = None, if_cased: bool = True, freeze: bool = False, additional_empty_embedding: bool = False, keepall: bool = False):
+    def __init__(self, embeddings: str, all_tokens: list, field: str = None, if_cased: bool = True, freeze: bool = False, additional_empty_embedding: bool = False, keepall: bool = False, embedding_name: str = None):
         """
         Initializes classic word embeddings. Constructor downloads required files if not there.
         :param embeddings: one of: 'glove', 'extvec', 'crawl' or two-letter language code or custom
@@ -551,6 +551,8 @@ class FastWordEmbeddings(TokenEmbeddings):
         self.field = field
 
         self.name = f'Word: {embed_name}'
+        if embedding_name is not None:
+            self.name = embedding_name
         self.__embedding_length: int = precomputed_word_embeddings.vector_size
         self.if_cased = if_cased
         self.get = self.get_idx_cased if if_cased else self.get_idx
@@ -670,11 +672,14 @@ class FastCharacterEmbeddings(TokenEmbeddings):
         hidden_size_char: int = 25,
         char_cnn = False,
         debug = False,
+        embedding_name: str = None,
     ):
         """Uses the default character dictionary if none provided."""
 
         super().__init__()
         self.name = "Char"
+        if embedding_name is not None:
+            self.name = embedding_name
         self.static_embeddings = False
         self.char_cnn = char_cnn
         self.debug = debug
@@ -1203,7 +1208,7 @@ class ELMoEmbeddings(TokenEmbeddings):
     """Contextual word embeddings using word-level LM, as proposed in Peters et al., 2018."""
 
     def __init__(
-        self, model: str = "original", options_file: str = None, weight_file: str = None
+        self, model: str = "original", options_file: str = None, weight_file: str = None, embedding_name = None,
     ):
         super().__init__()
 
@@ -1218,7 +1223,12 @@ class ELMoEmbeddings(TokenEmbeddings):
             log.warning("-" * 100)
             pass
 
-        self.name = "elmo-" + model
+
+        if embedding_name is None:
+            self.name = "elmo-" + model
+        else:
+            self.name = embedding_name
+        
         self.static_embeddings = True
 
         if not options_file or not weight_file:
@@ -2237,7 +2247,7 @@ class CharacterEmbeddings(TokenEmbeddings):
 class FlairEmbeddings(TokenEmbeddings):
     """Contextual string embeddings of words, as proposed in Akbik et al., 2018."""
 
-    def __init__(self, model, fine_tune: bool = False, chars_per_chunk: int = 512):
+    def __init__(self, model, fine_tune: bool = False, chars_per_chunk: int = 512, embedding_name: str = None):
         """
         initializes contextual string embeddings using a character-level language model.
         :param model: model string, one of 'news-forward', 'news-backward', 'news-forward-fast', 'news-backward-fast',
@@ -2394,7 +2404,10 @@ class FlairEmbeddings(TokenEmbeddings):
             self.name = f"Task-LSTM-{self.lm.hidden_size}-{self.lm.nlayers}-{self.lm.is_forward_lm}"
         else:
             self.lm: LanguageModel = LanguageModel.load_language_model(model)
-            self.name = str(model)
+            
+        if embedding_name is not None:
+            self.name = embedding_name
+        
 
         # embeddings are static if we don't do finetuning
         self.fine_tune = fine_tune
@@ -2879,6 +2892,7 @@ class TransformerWordEmbeddings(TokenEmbeddings):
         stride: int = -1,
         maximum_window: bool = False,
         document_extraction: bool = False,
+        embedding_name: str = None,
         **kwargs
     ):
         """
@@ -2892,6 +2906,7 @@ class TransformerWordEmbeddings(TokenEmbeddings):
         models tend to be huge.
         :param use_scalar_mix: If True, uses a scalar mix of layers as embedding
         :param fine_tune: If True, allows transformers to be fine-tuned during training
+        :param embedding_name: We recommend to set embedding_name if you use absolute path to the embedding file. If you do not set it in training, the order of embeddings is changed when you run the trained ACE model on other server.
         """
         super().__init__()
 
@@ -2920,7 +2935,10 @@ class TransformerWordEmbeddings(TokenEmbeddings):
 
         # model name
         # self.name = 'transformer-word-' + str(model)
-        self.name = str(model)
+        if embedding_name is None:
+            self.name = str(model)
+        else:
+            self.name = embedding_name
 
         # when initializing, embeddings are in eval mode by default
         self.model.eval()

@@ -20,8 +20,8 @@ ReinforcementTrainer:
   distill_mode: false
   optimizer: SGD
   pretrained_file_dict:
-    bert-base-german-dbmdz-cased: bert-base-german-dbmdz-cased.hdf5
-    xlm-roberta-large-finetuned-conll03-german: xlm-roberta-large-finetuned-conll03-german.hdf5
+    /home/yongjiang.jy/.flair/embeddings/bert-base-german-dbmdz-cased: bert-base-german-dbmdz-cased.hdf5
+    /home/yongjiang.jy/.flair/embeddings/xlm-roberta-large-finetuned-conll03-german: xlm-roberta-large-finetuned-conll03-german.hdf5
     bert-base-multilingual-cased: bert-base-multilingual-cased.hdf5
   sentence_level_batch: true
 anneal_factor: 2
@@ -53,10 +53,12 @@ embeddings:
     layers: '-1'
     model: xlm-roberta-large-finetuned-conll03-german
     pooling_operation: first
+    embedding_name: /home/yongjiang.jy/.flair/embeddings/xlm-roberta-large-finetuned-conll03-german # DO NOT modify this when using the downloaded models. You can remove if you want to train the model
   TransformerWordEmbeddings-1:
     layers: -1,-2,-3,-4
     model: bert-base-german-dbmdz-cased
     pooling_operation: first
+    embedding_name: /home/yongjiang.jy/.flair/embeddings/bert-base-german-dbmdz-cased # DO NOT modify this when using the downloaded models. You can remove if you want to train the model
   TransformerWordEmbeddings-2:
     layers: -1,-2,-3,-4
     model: bert-base-multilingual-cased
