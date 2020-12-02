@@ -61,22 +61,22 @@ In our code, most of the embeddings can be downloaded automatically (except ELMo
 
 | Name | Link | 
 | -------------------------------  | ---|
-|GloVe | [nlp.stanford.edu/projects/glove](nlp.stanford.edu/projects/glove)|
-|fastText | [github.com/facebookresearch/fastText](github.com/facebookresearch/fastText)|
-|ELMo | [github.com/allenai/allennlp](github.com/allenai/allennlp)|
-|ELMo (Other languages) | [github.com/TalSchuster/CrossLingualContextualEmb](github.com/TalSchuster/CrossLingualContextualEmb)|
-|BERT | [huggingface.co/bert-base-cased](huggingface.co/bert-base-cased)|
-|M-BERT | [huggingface.co/bert-base-multilingual-cased](huggingface.co/bert-base-multilingual-cased)|
-|BERT (Dutch) | [huggingface.co/wietsedv/bert-base-dutch-cased](huggingface.co/wietsedv/bert-base-dutch-cased)|
-|BERT (German) | [huggingface.co/bert-base-german-dbmdz-cased](huggingface.co/bert-base-german-dbmdz-cased)|
-|BERT (Spanish) | [huggingface.co/dccuchile/bert-base-spanish-wwm-cased](huggingface.co/dccuchile/bert-base-spanish-wwm-cased)|
-|BERT (Turkish) | [huggingface.co/dbmdz/bert-base-turkish-cased](huggingface.co/dbmdz/bert-base-turkish-cased)|
-|XLM-R | [huggingface.co/xlm-roberta-large](huggingface.co/xlm-roberta-large)|
-|XLM-R (CoNLL 02 Dutch) | [huggingface.co/xlm-roberta-large-finetuned-conll02-dutch](huggingface.co/xlm-roberta-large-finetuned-conll02-dutch)|
-|XLM-R (CoNLL 02 Spanish) | [huggingface.co/xlm-roberta-large-finetuned-conll02-spanish](huggingface.co/xlm-roberta-large-finetuned-conll02-spanish)|
-|XLM-R (CoNLL 03 English) | [huggingface.co/xlm-roberta-large-finetuned-conll03-english](huggingface.co/xlm-roberta-large-finetuned-conll03-english)|
-|XLM-R (CoNLL 03 German) | [huggingface.co/xlm-roberta-large-finetuned-conll03-german](huggingface.co/xlm-roberta-large-finetuned-conll03-german)|
-|XLNet | [huggingface.co/xlnet-large-cased](huggingface.co/xlnet-large-cased)|
+|GloVe | [nlp.stanford.edu/projects/glove](https://nlp.stanford.edu/projects/glove)|
+|fastText | [github.com/facebookresearch/fastText](https://github.com/facebookresearch/fastText)|
+|ELMo | [github.com/allenai/allennlp](https://github.com/allenai/allennlp)|
+|ELMo (Other languages) | [github.com/TalSchuster/CrossLingualContextualEmb](https://github.com/TalSchuster/CrossLingualContextualEmb)|
+|BERT | [huggingface.co/bert-base-cased](https://huggingface.co/bert-base-cased)|
+|M-BERT | [huggingface.co/bert-base-multilingual-cased](https://huggingface.co/bert-base-multilingual-cased)|
+|BERT (Dutch) | [huggingface.co/wietsedv/bert-base-dutch-cased](https://huggingface.co/wietsedv/bert-base-dutch-cased)|
+|BERT (German) | [huggingface.co/bert-base-german-dbmdz-cased](https://huggingface.co/bert-base-german-dbmdz-cased)|
+|BERT (Spanish) | [huggingface.co/dccuchile/bert-base-spanish-wwm-cased](https://huggingface.co/dccuchile/bert-base-spanish-wwm-cased)|
+|BERT (Turkish) | [huggingface.co/dbmdz/bert-base-turkish-cased](https://huggingface.co/dbmdz/bert-base-turkish-cased)|
+|XLM-R | [huggingface.co/xlm-roberta-large](https://huggingface.co/xlm-roberta-large)|
+|XLM-R (CoNLL 02 Dutch) | [huggingface.co/xlm-roberta-large-finetuned-conll02-dutch](https://huggingface.co/xlm-roberta-large-finetuned-conll02-dutch)|
+|XLM-R (CoNLL 02 Spanish) | [huggingface.co/xlm-roberta-large-finetuned-conll02-spanish](https://huggingface.co/xlm-roberta-large-finetuned-conll02-spanish)|
+|XLM-R (CoNLL 03 English) | [huggingface.co/xlm-roberta-large-finetuned-conll03-english](https://huggingface.co/xlm-roberta-large-finetuned-conll03-english)|
+|XLM-R (CoNLL 03 German) | [huggingface.co/xlm-roberta-large-finetuned-conll03-german](https://huggingface.co/xlm-roberta-large-finetuned-conll03-german)|
+|XLNet | [huggingface.co/xlnet-large-cased](https://huggingface.co/xlnet-large-cased)|
 
 ## Pretrained Models
 We provide pretrained models for Named Entity Recognition (Sentence-/Document-Level) and Dependency Parsing (PTB) on [OneDrive](https://1drv.ms/u/s!Am53YNAPSsodg810cf4qsCBCMW9PAg?e=qmGMgG). You can find the corresponding config file in `config/`. For the zip files named with `doc*.zip`, you need to extract document-level embeddings at first. Please check [(Optional) Extract Document Features](#Optional-Extract-Document-Features).
