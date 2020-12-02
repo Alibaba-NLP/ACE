@@ -42,6 +42,7 @@ ACE is a framework for automatically searching a good embedding concatenation fo
 - [Parse files](#parse-files)
 - [Config File](#Config-File)
 - [TODO](#todo)
+- [Citing Us](#Citing-Us)
 - [Contact](#contact)
 
 ## Requirements
@@ -57,7 +58,7 @@ The following requirements should be satisfied:
 
 ## Download Embeddings
 
-In our code, most of the embeddings can be downloaded automatically (except ELMo for non-English languages). You can also download the embeddings manually. The embeddings we used in the papaer can be downloaded here:
+In our code, most of the embeddings can be downloaded automatically (except ELMo for non-English languages). You can also download the embeddings manually. The embeddings we used in the paper can be downloaded here:
 
 | Name | Link | 
 | -------------------------------  | ---|
