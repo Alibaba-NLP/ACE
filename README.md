@@ -79,6 +79,15 @@ In our code, most of the embeddings can be downloaded automatically (except ELMo
 |XLM-R (CoNLL 03 German) | [huggingface.co/xlm-roberta-large-finetuned-conll03-german](https://huggingface.co/xlm-roberta-large-finetuned-conll03-german)|
 |XLNet | [huggingface.co/xlnet-large-cased](https://huggingface.co/xlnet-large-cased)|
 
+After the embeddings are downloaded, you need to set the path of embeddings in the config file manually. For example in `config/conll_03_english.yaml`:
+```
+TransformerWordEmbeddings-1:
+    model: your/embedding/path 
+    layers: -1,-2,-3,-4
+    pooling_operation: mean
+```
+
+
 ## Pretrained Models
 We provide pretrained models for Named Entity Recognition (Sentence-/Document-Level) and Dependency Parsing (PTB) on [OneDrive](https://1drv.ms/u/s!Am53YNAPSsodg810cf4qsCBCMW9PAg?e=qmGMgG). You can find the corresponding config file in `config/`. For the zip files named with `doc*.zip`, you need to extract document-level embeddings at first. Please check [(Optional) Extract Document Features](#Optional-Extract-Document-Features).
 
