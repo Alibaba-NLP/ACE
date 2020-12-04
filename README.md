@@ -154,7 +154,7 @@ ner:
 targets: dependency
 dependency:
   Corpus: UniversalDependenciesCorpus-1
-  UniversalDependenciesCorpus:
+  UniversalDependenciesCorpus-1:
     data_folder: datasets/ptb
     add_root: True
   tag_dictionary: resources/taggers/your_parsing_tags.pkl
