@@ -1,0 +1,66 @@
+Controller:
+  model_structure: null
+ReinforcementTrainer:
+  controller_learning_rate: 0.1
+  controller_optimizer: SGD
+  distill_mode: false
+  optimizer: SGD
+  sentence_level_batch: true
+embeddings:
+  BertEmbeddings-1:
+    bert_model_or_path: /home/yongjiang.jy/.flair/embeddings/en-bert_10epoch_16batch_0.00005lr_10000lrrate_tweebank_monolingual_nocrf_fast_relearn_sentbatch_sentloss_finetune_saving_nodev_upos3/bert-base-cased
+    layers: '-1'
+    pooling_operation: mean
+  BertEmbeddings-2:
+    bert_model_or_path: /home/yongjiang.jy/.flair/embeddings/multi-bert_10epoch_16batch_0.00005lr_10000lrrate_tweebank_monolingual_nocrf_fast_relearn_sentbatch_sentloss_finetune_saving_nodev_upos3/bert-base-multilingual-cased
+    layers: '-1'
+    pooling_operation: mean
+  ELMoEmbeddings-0:
+    options_file: /home/yongjiang.jy/.flair/embeddings/elmo_2x4096_512_2048cnn_2xhighway_options.json
+    weight_file: /home/yongjiang.jy/.flair/embeddings/elmo_2x4096_512_2048cnn_2xhighway_weights.hdf5
+  FastCharacterEmbeddings:
+    char_embedding_dim: 25
+    hidden_size_char: 25
+  FastWordEmbeddings-0:
+    embeddings: en
+    freeze: true
+  FlairEmbeddings-0:
+    model: en-forward
+  FlairEmbeddings-1:
+    model: en-backward
+  FlairEmbeddings-2:
+    model: multi-forward
+  FlairEmbeddings-3:
+    model: multi-backward
+  XLMRoBERTaEmbeddings-0:
+    layers: '-1'
+    pooling_operation: mean
+    pretrained_model_name_or_path: /home/yongjiang.jy/.flair/embeddings/xlmr_10epoch_8batch_0.00005lr_10000lrrate_tweebank_monolingual_nocrf_fast_relearn_sentbatch_sentloss_finetune_saving_nodev_upos3/xlm-roberta-large
+model:
+  FastSequenceTagger:
+    crf_attention: false
+    dropout: 0.0
+    hidden_size: 800
+    sentence_loss: true
+    use_crf: true
+model_name: xlmr-task_en-elmo_en-bert-task_multi-bert-task_word_en-flair_mflair_char_30episode_300epoch_32batch_0.1lr_800hidden_tweebank_monolingual_crf_fast_sqrtreward_reinforce_freeze_norelearn_sentbatch_0.5discount_5patience_nodev_new_upos8
+target_dir: resources/taggers/
+targets: upos
+train:
+  controller_momentum: 0.9
+  discount: 0.5
+  learning_rate: 0.1
+  max_episodes: 30
+  max_epochs: 300
+  max_epochs_without_improvement: 25
+  mini_batch_size: 32
+  monitor_test: false
+  patience: 5
+  save_final_model: false
+  sqrt_reward: true
+  train_with_dev: false
+  true_reshuffle: false
+trainer: ReinforcementTrainer
+upos:
+  Corpus: TWEEBANK
+  tag_dictionary: resources/taggers/tweebank_pos_tags.pkl
