@@ -65,9 +65,9 @@ mkl-fft==1.0.6
 mkl-random==1.0.1
 mock==4.0.1
 murmurhash==1.0.2
-mxnet==1.4.1
+mxnet==1.5.0
 nltk==3.4.5
-numpy==1.14.6
+numpy==1.15.1
 numpydoc==1.1.0
 nvidia-ml-py3==7.352.0
 olefile==0.46
@@ -139,7 +139,7 @@ traitlets==4.3.3
 transformers==3.0.0
 truecase==0.0.11
 Unidecode==1.1.1
-urllib3==1.25.7
+urllib3==1.25.10
 wasabi==0.6.0
 wcwidth==0.1.8
 Werkzeug==0.16.0
