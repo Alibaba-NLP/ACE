@@ -1,0 +1,109 @@
+Controller:
+  model_structure: null
+ReinforcementTrainer:
+  controller_learning_rate: 0.1
+  controller_optimizer: SGD
+  direct_upsample_rate: -1
+  distill_mode: false
+  down_sample_amount: -1
+  language_resample: false
+  optimizer: Adam
+dependency:
+  Corpus: CTB
+embeddings:
+  ELMoEmbeddings-0:
+    options_file: /home/yongjiang.jy/.flair/embeddings/elmo_2x4096_512_2048cnn_2xhighway_options.json
+    weight_file: /home/yongjiang.jy/.flair/embeddings/elmo_2x4096_512_2048cnn_2xhighway_weights.hdf5
+  FastCharacterEmbeddings:
+    char_embedding_dim: 100
+    hidden_size_char: 100
+  FastWordEmbeddings-0:
+    embeddings: glove
+    freeze: true
+  FlairEmbeddings-0:
+    model: multi-forward
+  FlairEmbeddings-1:
+    model: multi-backward
+  FlairEmbeddings-2:
+    model: en-forward
+  FlairEmbeddings-3:
+    model: en-backward
+  LemmaEmbeddings:
+    lemma_embedding_dim: 100
+  POSEmbeddings:
+    pos_embedding_dim: 50
+  TransformerWordEmbeddings-0:
+    layers: '-1'
+    model: /home/yongjiang.jy/.flair/embeddings/en-xlmr-first_10epoch_0.5inter_1batch_4accumulate_0.000005lr_20lrrate_psd_monolingual_nocrf_fast_warmup_freezing_beta_weightdecay_finetune_saving_sentbatch_nodev_enhancedud16/roberta-large
+    pooling_operation: first
+  TransformerWordEmbeddings-1:
+    layers: '-1'
+    model: /home/yongjiang.jy/.flair/embeddings/xlnet-first_10epoch_0.1inter_1batch_4accumulate_0.000005lr_20lrrate_psd_monolingual_nocrf_fast_warmup_freezing_beta_weightdecay_finetune_saving_sentbatch_nodev_enhancedud16/xlnet-large-cased
+    pooling_operation: first
+  TransformerWordEmbeddings-2:
+    layers: '-1'
+    model: /home/yongjiang.jy/.flair/embeddings/xlmr-first_10epoch_0.1inter_1batch_4accumulate_0.000005lr_20lrrate_psd_monolingual_nocrf_fast_warmup_freezing_beta_weightdecay_finetune_saving_sentbatch_nodev_enhancedud17/xlm-roberta-large
+    pooling_operation: first
+  TransformerWordEmbeddings-3:
+    layers: '-1'
+    model: /home/yongjiang.jy/.flair/embeddings/en-bert_20epoch_0.1inter_1000batch_0.00005lr_20lrrate_psd_monolingual_nocrf_fast_warmup_freezing_beta_weightdecay_finetune_saving_nodev_enhancedud16/bert-base-cased
+    pooling_operation: first
+  TransformerWordEmbeddings-4:
+    layers: '-1'
+    model: /home/yongjiang.jy/.flair/embeddings/multi-bert_20epoch_0.1inter_1000batch_0.00005lr_20lrrate_psd_monolingual_nocrf_fast_warmup_freezing_beta_weightdecay_finetune_saving_nodev_enhancedud16/bert-base-multilingual-cased
+    pooling_operation: first
+enhancedud:
+  Corpus: PSD:PSD_OOD
+is_teacher_list: true
+is_toy: false
+model:
+  SemanticDependencyParser:
+    binary: true
+    dropout: 0.0
+    factorize: true
+    hidden_size: 400
+    identity: true
+    init_std: 0.25
+    interpolation: 0.025
+    iterations: 3
+    lstm_dropout: 0.33
+    mlp_dropout: 0.33
+    n_mlp_arc: 500
+    n_mlp_rel: 100
+    n_mlp_sec: 150
+    rnn_layers: 3
+    tree: false
+    use_cop: true
+    use_crf: false
+    use_gp: true
+    use_rnn: true
+    use_second_order: false
+    use_sib: true
+    word_dropout: 0.33
+model_name: en-xlmr-task_xlnet-task_xlmr-task_elmo_bert-task_multi-bert-task_word-glove_char_lemma_pos_mflair_origflair_30episode_300epoch_0.025inter_5000batch_0.002lr_400hidden_psd_monolingual_nocrf_fast_reinforce_freeze_fast_identity_nodev_enhancedud4
+srl:
+  Corpus: SRL-EN
+target_dir: resources/taggers/
+targets: enhancedud
+teacher_annealing: false
+train:
+  betas:
+  - 0.9
+  - 0.9
+  controller_momentum: 0.9
+  fine_tune_mode: false
+  learning_rate: 0.002
+  lr_rate: 1
+  max_episodes: 30
+  max_epochs: 300
+  max_epochs_without_improvement: 25
+  min_freq: 2
+  min_lemma_freq: 7
+  mini_batch_size: 5000
+  monitor_test: false
+  save_final_model: false
+  sort_data: true
+  train_with_dev: false
+  true_reshuffle: false
+  use_warmup: false
+trainer: ReinforcementTrainer
