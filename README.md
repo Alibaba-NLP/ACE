@@ -1,7 +1,7 @@
 
 # ACE
 
-The code is for our paper: [Automated Concatenation of Embeddings for Structured Prediction](https://arxiv.org/abs/2010.05006)
+The code is for our ACL-IJCNLP 2021 paper: [Automated Concatenation of Embeddings for Structured Prediction](https://arxiv.org/abs/2010.05006)
 
 ACE is a framework for automatically searching a good embedding concatenation for structured prediction tasks and achieving state-of-the-art accuracy. The code is based on [flair version 0.4.3](https://github.com/flairNLP/flair) with a lot of modifications.
 
@@ -9,23 +9,31 @@ ACE is a framework for automatically searching a good embedding concatenation fo
 
 | Task | Language | Dataset | ACE | Previous best |
 | -------------------------------  | ---  | ----------- | ---------------- | ------------- |
-| Named Entity Recognition |English | CoNLL 03 (sentence-level)   |  **93.6** (F1)  | *93.5 [(Yu et al., 2020)](https://arxiv.org/pdf/2005.07150.pdf)* |
-| Named Entity Recognition |English | CoNLL 03 (document-level)   |  **94.1** (F1)  | *93.5 [(Yu et al., 2020)](https://arxiv.org/pdf/2005.07150.pdf)* |
-| Named Entity Recognition |German | CoNLL 03 (document-level)   |  **88.0** (F1) | *86.4 [(Yu et al., 2020)](https://arxiv.org/pdf/2005.07150.pdf)* |
-| Named Entity Recognition |German | CoNLL 03 (06 Revision) (document-level)   |  **91.4** (F1)   | *90.3 [(Yu et al., 2020)](https://arxiv.org/pdf/2005.07150.pdf)* |
-| Named Entity Recognition |Dutch | CoNLL 02 (document-level)   |  **95.5** (F1) | *93.7 [(Yu et al., 2020)](https://arxiv.org/pdf/2005.07150.pdf)* |
-| Named Entity Recognition |Spanish | CoNLL 02 (document-level)   |  **95.6** (F1)  | *90.3 [(Yu et al., 2020)](https://arxiv.org/pdf/2005.07150.pdf)* |
+
+| Named Entity Recognition |English | CoNLL 03 (document-level)   |  **94.6** (F1)  | *94.3 [(Yamada et al., 2020)](https://arxiv.org/pdf/2010.01057.pdf)* |
+| Named Entity Recognition |German | CoNLL 03 (document-level)   |  **88.3** (F1) | *86.4 [(Yu et al., 2020)](https://arxiv.org/pdf/2005.07150.pdf)* |
+| Named Entity Recognition |German | CoNLL 03 (06 Revision) (document-level)   |  **91.7** (F1)   | *90.3 [(Yu et al., 2020)](https://arxiv.org/pdf/2005.07150.pdf)* |
+| Named Entity Recognition |Dutch | CoNLL 02 (document-level)   |  **95.7** (F1) | *93.7 [(Yu et al., 2020)](https://arxiv.org/pdf/2005.07150.pdf)* |
+| Named Entity Recognition |Spanish | CoNLL 02 (document-level)   |  **95.9** (F1)  | *90.3 [(Yu et al., 2020)](https://arxiv.org/pdf/2005.07150.pdf)* |
+| Named Entity Recognition |English | CoNLL 03 (sentence-level)   |  **93.6** (F1)  | *94.3 [(Baevski et al., 2019)](https://arxiv.org/pdf/1903.07785v1.pdf)* |
+| Named Entity Recognition |German | CoNLL 03 (sentence-level)   |  **87.0** (F1) | *86.4 [(Yu et al., 2020)](https://arxiv.org/pdf/2005.07150.pdf)* |
+| Named Entity Recognition |German | CoNLL 03 (06 Revision) (sentence-level)   |  **90.5** (F1)   | *90.3 [(Yu et al., 2020)](https://arxiv.org/pdf/2005.07150.pdf)* |
+| Named Entity Recognition |Dutch | CoNLL 02 (sentence-level)   |  **94.6** (F1) | *93.7 [(Yu et al., 2020)](https://arxiv.org/pdf/2005.07150.pdf)* |
+| Named Entity Recognition |Spanish | CoNLL 02 (sentence-level)   |  **91.7** (F1)  | *90.3 [(Yu et al., 2020)](https://arxiv.org/pdf/2005.07150.pdf)* |
 | POS Tagging |English | Ritter's |  **93.4** (Acc)  | *90.1 [(Nguyen et al., 2020)](https://arxiv.org/pdf/2005.10200.pdf)* |
-| POS Tagging |English | TweeBank v2 |  **95.6** (Acc)  | *95.2 [(Nguyen et al., 2020)](https://arxiv.org/pdf/2005.10200.pdf)* |
-| Aspect Extraction |English | SemEval 2014 Laptop |  **85.0** (F1)  | *84.3 [(Xu et al., 2019)](https://arxiv.org/pdf/1904.02232.pdf)* |
-| Aspect Extraction |English | SemEval 2016 Restaurant |  **81.2** (F1)  | *78.0 [(Xu et al., 2019)](https://arxiv.org/pdf/1904.02232.pdf)* |
+| POS Tagging |English | Ark |  **94.4** (Acc)  | *94.1 [(Nguyen et al., 2020)](https://arxiv.org/pdf/2005.10200.pdf)* |
+| POS Tagging |English | TweeBank v2 |  **95.8** (Acc)  | *95.2 [(Nguyen et al., 2020)](https://arxiv.org/pdf/2005.10200.pdf)* |
+| Aspect Extraction |English | SemEval 2014 Laptop |  **87.4** (F1)  | *84.3 [(Xu et al., 2019)](https://arxiv.org/pdf/1904.02232.pdf)* |
+| Aspect Extraction |English | SemEval 2014 Restaurant |  **92.0** (F1)  | *87.1 [(Wei et al., 2020)](https://www.aclweb.org/anthology/2020.acl-main.339/)* |
+| Aspect Extraction |English | SemEval 2015 Restaurant |  **80.3** (F1)  | *72.7 [(Wei et al., 2020)](https://www.aclweb.org/anthology/2020.acl-main.339/)* |
+| Aspect Extraction |English | SemEval 2016 Restaurant |  **81.3** (F1)  | *78.0 [(Xu et al., 2019)](https://arxiv.org/pdf/1904.02232.pdf)* |
 | Dependency Parsing | English | PTB    |  **95.7** (LAS)  | *95.3 [(Wang et al., 2020)](https://arxiv.org/pdf/2010.05003.pdf)* |
-| Semantic Dependency Parsing | English | DM ID   |  **95.3** (LF1)  | *94.4 [(Fernández-González and Gómez-Rodríguez, 2020)](https://www.aclweb.org/anthology/2020.acl-main.629/)* |
+| Semantic Dependency Parsing | English | DM ID   |  **95.6** (LF1)  | *94.4 [(Fernández-González and Gómez-Rodríguez, 2020)](https://www.aclweb.org/anthology/2020.acl-main.629/)* |
 | Semantic Dependency Parsing | English | DM OOD   |  **92.6** (LF1)  | *91.0 [(Fernández-González and Gómez-Rodríguez, 2020)](https://www.aclweb.org/anthology/2020.acl-main.629/)* |
-| Semantic Dependency Parsing | English | PAS ID   |  **95.3** (LF1)  | *95.1 [(Fernández-González and Gómez-Rodríguez, 2020)](https://www.aclweb.org/anthology/2020.acl-main.629/)* |
-| Semantic Dependency Parsing | English | PAS OOD   |  **93.9** (LF1)  | *93.4 [(Fernández-González and Gómez-Rodríguez, 2020)](https://www.aclweb.org/anthology/2020.acl-main.629/)* |
-| Semantic Dependency Parsing | English | PSD ID   |  **83.6** (LF1)  | *82.6 [(Fernández-González and Gómez-Rodríguez, 2020)](https://www.aclweb.org/anthology/2020.acl-main.629/)* |
-| Semantic Dependency Parsing | English | PSD OOD   |  **83.2** (LF1)  | *82.0 [(Fernández-González and Gómez-Rodríguez, 2020)](https://www.aclweb.org/anthology/2020.acl-main.629/)* |
+| Semantic Dependency Parsing | English | PAS ID   |  **95.8** (LF1)  | *95.1 [(Fernández-González and Gómez-Rodríguez, 2020)](https://www.aclweb.org/anthology/2020.acl-main.629/)* |
+| Semantic Dependency Parsing | English | PAS OOD   |  **94.6** (LF1)  | *93.4 [(Fernández-González and Gómez-Rodríguez, 2020)](https://www.aclweb.org/anthology/2020.acl-main.629/)* |
+| Semantic Dependency Parsing | English | PSD ID   |  **83.8** (LF1)  | *82.6 [(Fernández-González and Gómez-Rodríguez, 2020)](https://www.aclweb.org/anthology/2020.acl-main.629/)* |
+| Semantic Dependency Parsing | English | PSD OOD   |  **83.4** (LF1)  | *82.0 [(Fernández-González and Gómez-Rodríguez, 2020)](https://www.aclweb.org/anthology/2020.acl-main.629/)* |
 
 ## Guide
 

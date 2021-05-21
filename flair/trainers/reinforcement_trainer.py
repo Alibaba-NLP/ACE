@@ -1353,7 +1353,7 @@ class ReinforcementTrainer(ModelDistiller):
 				print(name_list)
 		except:
 			pdb.set_trace()
-
+		# pdb.set_trace()
 		# Since there are a lot of embeddings, we keep these embeddings to cpu in order to avoid OOM
 		for name, module in self.model.named_modules():
 			if 'embeddings' in name or name == '':
