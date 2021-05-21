@@ -9,7 +9,6 @@ ACE is a framework for automatically searching a good embedding concatenation fo
 
 | Task | Language | Dataset | ACE | Previous best |
 | -------------------------------  | ---  | ----------- | ---------------- | ------------- |
-
 | Named Entity Recognition |English | CoNLL 03 (document-level)   |  **94.6** (F1)  | *94.3 [(Yamada et al., 2020)](https://arxiv.org/pdf/2010.01057.pdf)* |
 | Named Entity Recognition |German | CoNLL 03 (document-level)   |  **88.3** (F1) | *86.4 [(Yu et al., 2020)](https://arxiv.org/pdf/2005.07150.pdf)* |
 | Named Entity Recognition |German | CoNLL 03 (06 Revision) (document-level)   |  **91.7** (F1)   | *90.3 [(Yu et al., 2020)](https://arxiv.org/pdf/2005.07150.pdf)* |
