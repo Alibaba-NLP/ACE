@@ -155,7 +155,7 @@ Note that you may need to preprocess your file with the dummy tags, please check
 ---
 
 ### Document-level Model
-Download the [doc_ner_de_03_best.zip](https://1drv.ms/u/s!Am53YNAPSsodg9cVGGamr-oucXuMdA?e=B9hmN6) and [doc_ner_de_06_best.zip]() at [OneDrive](https://1drv.ms/u/s!Am53YNAPSsodg810NxHQcrJpcNIOig?e=FRsJNR). Unzip the file and move the unzipped repository to `resources/taggers`. 
+Download the [doc_ner_de_03_best.zip](https://1drv.ms/u/s!Am53YNAPSsodg9cVGGamr-oucXuMdA?e=B9hmN6) and [doc_ner_de_06_best.zip](https://1drv.ms/u/s!Am53YNAPSsodg9cdAmAm3NlblIihtQ?e=HN1jHP) at [OneDrive](https://1drv.ms/u/s!Am53YNAPSsodg810NxHQcrJpcNIOig?e=FRsJNR). Unzip the file and move the unzipped repository to `resources/taggers`. 
 
 Both of the models need the pre-extracted document-level features of `bert-base-german-dbmdz-cased` and `bert-base-multilingual-cased`. Pre-extracted features: [bert-base-german-dbmdz-cased.hdf5](https://1drv.ms/u/s!Am53YNAPSsodg9cXXwqPsONUgpedHw?e=pD58wC) and [bert-base-multilingual-cased.hdf5](https://1drv.ms/u/s!Am53YNAPSsodg9ccJzhEa1qMDjtBDw?e=eFNYf7) (Note that [bert-base-multilingual-cased.hdf5](https://1drv.ms/u/s!Am53YNAPSsodg9ccJzhEa1qMDjtBDw?e=eFNYf7) contains the pre-extracted of all languages of CoNLL datasets, so you do not need to download it again if you already downloaded it.). If you want to extract the features by yourself, see [(Optional) Extract Document Features](https://github.com/Alibaba-NLP/ACE#optional-extract-document-features-for-bert-models) for the guide to extract the document-level features. 
 
