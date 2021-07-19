@@ -50,7 +50,7 @@ ACE is a framework for automatically searching a good embedding concatenation fo
   - [Train on Your Own Dataset](#Train-on-Your-Own-Dataset)
   - [Set the Embeddings](#Set-the-Embeddings)
   - [(Optional) Fine-tune Transformer-based Embeddings](#Optional-Fine-tune-Transformer-based-Embeddings)
-  - [(Optional) Extract Document Features](#Optional-Extract-Document-Features)
+  - [(Optional) Extract Document Features for BERT Embeddings](#Optional-Extract-Document-Features-for-BERT-Embeddings)
 - [Parse files](#parse-files)
 - [Config File](#Config-File)
 - [TODO](#todo)
@@ -101,7 +101,7 @@ TransformerWordEmbeddings-1:
 
 
 ## Pretrained Models
-We provide pretrained models for Named Entity Recognition (Sentence-/Document-Level) and Dependency Parsing (PTB) on [OneDrive](https://1drv.ms/u/s!Am53YNAPSsodg810cf4qsCBCMW9PAg?e=qmGMgG). You can find the corresponding config file in `config/`. For the zip files named with `doc*.zip`, you need to extract document-level embeddings at first. Please check [(Optional) Extract Document Features](#Optional-Extract-Document-Features).
+We provide pretrained models for Named Entity Recognition (Sentence-/Document-Level) and Dependency Parsing (PTB) on [OneDrive](https://1drv.ms/u/s!Am53YNAPSsodg810cf4qsCBCMW9PAg?e=qmGMgG). You can find the corresponding config file in `config/`. For the zip files named with `doc*.zip`, you need to extract document-level embeddings at first. Please check [(Optional) Extract Document Features for BERT Embeddings](#Optional-Extract-Document-Features-for-BERT-Embeddings).
 
 * Download models
 * `unzip` the zip file
@@ -248,9 +248,9 @@ Then, replace `bert-base-cased` with `resources/taggers/en-bert_10epoch_0.5inter
 The config `config/en-bert-finetune-ptb.yaml` can be applied to fine-tuning other embeddings in **parsing tasks**. Here is an example config for fine-tuning NER (**sequence labeling tasks**): `config/en-bert-finetune-ner.yaml`
 
 
-### (Optional) Extract Document Features
+### (Optional) Extract Document Features for BERT Embeddings
 
-To archieve state-of-the-art accuracy of **NER**, one optional approach is extracting the document-level features from the transformer-based embeddings. Then take the features as an embedding candidate of ACE. We follow the embedding extraction approach of [Yu et al., 2020](https://arxiv.org/pdf/2005.07150.pdf). We use the sentences with a single word `-DOCSTART-` to split the documents. For CoNLL 2002 Spanish, there is not `-DOCSTART-` sentences. Therefore, we add a `-DOCSTART-` sentence for every 25 sentences. For CoNLL 2002 Dutch, the `-DOCSTART-` is in the first sentence of the document, please split the `-DOCSTART-` token into a single sentence. For example:
+To archieve state-of-the-art accuracy of **NER**, one optional approach is extracting the document-level features from the BERT embeddings (for RoBERTa, XLM-R and XLNET, we feed the model with the whole document, if you are interested in this part, see [embeddings.py](flair/embeddings.py#L3533-L3749)). Then take the features as an embedding candidate of ACE. We follow the embedding extraction approach of [Yu et al., 2020](https://arxiv.org/pdf/2005.07150.pdf). We use the sentences with a single word `-DOCSTART-` to split the documents. For CoNLL 2002 Spanish, there is not `-DOCSTART-` sentences. Therefore, we add a `-DOCSTART-` sentence for every 25 sentences. For CoNLL 2002 Dutch, the `-DOCSTART-` is in the first sentence of the document, please split the `-DOCSTART-` token into a single sentence. For example:
 
 ```
 -DOCSTART- -DOCSTART- O

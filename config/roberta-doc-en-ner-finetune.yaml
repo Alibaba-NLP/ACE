@@ -1,0 +1,48 @@
+ModelFinetuner:
+  assign_doc_id: true
+  distill_mode: false
+  sentence_level_batch: true
+  train_with_doc: true
+anneal_factor: 2
+embeddings:
+  TransformerWordEmbeddings-0:
+    fine_tune: true
+    layers: '-1'
+    model: roberta-large
+    pooling_operation: first
+    v2_doc: true
+interpolation: 0.5
+is_teacher_list: true
+model:
+  FastSequenceTagger:
+    crf_attention: false
+    dropout: 0.0
+    hidden_size: 256
+    locked_dropout: 0.0
+    sentence_loss: true
+    use_cnn: false
+    use_crf: false
+    use_rnn: false
+    word_dropout: 0.1
+model_name: en-xlmr-first-docv2_10epoch_1batch_4accumulate_0.000005lr_10000lrrate_eng_monolingual_nocrf_fast_norelearn_sentbatch_sentloss_finetune_nodev_saving_ner5
+ner:
+  Corpus: CONLL_03_ENGLISH
+  tag_dictionary: resources/taggers/ner_tags.pkl
+target_dir: resources/taggers/
+targets: ner
+teacher_annealing: false
+train:
+  embeddings_storage_mode: none
+  fine_tune_mode: true
+  gradient_accumulation_steps: 4
+  learning_rate: 5.0e-06
+  lr_rate: 10000
+  max_epochs: 10
+  mini_batch_size: 1
+  monitor_test: false
+  save_final_model: false
+  save_finetuned_embedding: true
+  train_with_dev: false
+  true_reshuffle: false
+  use_warmup: false
+trainer: ModelFinetuner
