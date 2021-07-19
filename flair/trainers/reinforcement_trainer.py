@@ -10,6 +10,7 @@ from transformers import (
 	get_linear_schedule_with_warmup,
 )
 from flair.models.biaffine_attention import BiaffineAttention, BiaffineFunction
+from flair.models.dependency_model import generate_tree, convert_score_back
 from torch.optim.lr_scheduler import ExponentialLR, LambdaLR
 import random
 import copy
@@ -22,12 +23,12 @@ import json
 import gc
 
 # def check_garbage():
-# 	for obj in gc.get_objects():
-# 		try:
-# 			if torch.is_tensor(obj):
-# 				pring(type(obj),obj.size())
-# 		except:
-# 			pass
+#   for obj in gc.get_objects():
+#       try:
+#           if torch.is_tensor(obj):
+#               pring(type(obj),obj.size())
+#       except:
+#           pass
 
 
 def count_parameters(model):
@@ -79,7 +80,9 @@ class ReinforcementTrainer(ModelDistiller):
 		sentence_level_batch: bool = False,
 		dev_sample: bool = False,
 		assign_doc_id: bool = False,
+		train_with_doc: bool = False,
 		pretrained_file_dict: dict = {},
+		sentence_level_pretrained_data: bool = False,
 		# **kwargs,
 	):
 		"""
@@ -112,54 +115,53 @@ class ReinforcementTrainer(ModelDistiller):
 			sent_each_dataset=sent_per_set/total_sents
 			exp_sent_each_dataset=sent_each_dataset.pow(0.7)
 			sent_sample_prob=exp_sent_each_dataset/exp_sent_each_dataset.sum()
-
+		self.sentence_level_pretrained_data=sentence_level_pretrained_data
 
 		if assign_doc_id:
 			doc_sentence_dict = {}
 			same_corpus_mapping = {'CONLL_06_GERMAN': 'CONLL_03_GERMAN_NEW',
 			'CONLL_03_GERMAN_DP': 'CONLL_03_GERMAN_NEW',
-			'CONLL_06_GERMAN_DP': 'CONLL_03_GERMAN_NEW',
 			'CONLL_03_DP': 'CONLL_03_ENGLISH',
 			'CONLL_03_DUTCH_DP': 'CONLL_03_DUTCH_NEW',
 			'CONLL_03_SPANISH_DP': 'CONLL_03_SPANISH_NEW'}
 			for corpus_id in range(len(self.corpus2id)):
+				
 				if self.corpus.targets[corpus_id] in same_corpus_mapping:
 					corpus_name = same_corpus_mapping[self.corpus.targets[corpus_id]].lower()+'_'
 				else:
 					corpus_name = self.corpus.targets[corpus_id].lower()+'_'
-				doc_name = 'train_'
-				doc_idx = -1
-				for sentence in self.corpus.train_list[corpus_id]:
-					if '-DOCSTART-' in sentence[0].text:
-						doc_idx+=1
-						doc_key='start'
-					else:
-						doc_key=corpus_name+doc_name+str(doc_idx)
-					if doc_key not in doc_sentence_dict:
-						doc_sentence_dict[doc_key]=[]
-					doc_sentence_dict[doc_key].append(sentence)
-				doc_name = 'dev_'
-				doc_idx = -1
-				for sentence in self.corpus.dev_list[corpus_id]:
-					if '-DOCSTART-' in sentence[0].text:
-						doc_idx+=1
-						doc_key='start'
-					else:
-						doc_key=corpus_name+doc_name+str(doc_idx)
-					if doc_key not in doc_sentence_dict:
-						doc_sentence_dict[doc_key]=[]
-					doc_sentence_dict[doc_key].append(sentence)
-				doc_name = 'test_'
-				doc_idx = -1
-				for sentence in self.corpus.test_list[corpus_id]:
-					if '-DOCSTART-' in sentence[0].text:
-						doc_idx+=1
-						doc_key='start'
-					else:
-						doc_key=corpus_name+doc_name+str(doc_idx)
-					if doc_key not in doc_sentence_dict:
-						doc_sentence_dict[doc_key]=[]
-					doc_sentence_dict[doc_key].append(sentence)
+				doc_sentence_dict = self.assign_documents(self.corpus.train_list[corpus_id], 'train_', doc_sentence_dict, corpus_name, train_with_doc)
+				doc_sentence_dict = self.assign_documents(self.corpus.dev_list[corpus_id], 'dev_', doc_sentence_dict, corpus_name, train_with_doc)
+				doc_sentence_dict = self.assign_documents(self.corpus.test_list[corpus_id], 'test_', doc_sentence_dict, corpus_name, train_with_doc)
+				if train_with_doc:
+					new_sentences=[]
+					for sentid, sentence in enumerate(self.corpus.train_list[corpus_id]):
+						if sentence[0].text=='-DOCSTART-':
+							continue
+						new_sentences.append(sentence)
+					self.corpus.train_list[corpus_id].sentences = new_sentences.copy()
+					self.corpus.train_list[corpus_id].reset_sentence_count
+
+					new_sentences=[]
+					for sentid, sentence in enumerate(self.corpus.dev_list[corpus_id]):
+						if sentence[0].text=='-DOCSTART-':
+							continue
+						new_sentences.append(sentence)
+					self.corpus.dev_list[corpus_id].sentences = new_sentences.copy()
+					self.corpus.dev_list[corpus_id].reset_sentence_count
+
+					new_sentences=[]
+					for sentid, sentence in enumerate(self.corpus.test_list[corpus_id]):
+						if sentence[0].text=='-DOCSTART-':
+							continue
+						new_sentences.append(sentence)
+					self.corpus.test_list[corpus_id].sentences = new_sentences.copy()
+					self.corpus.test_list[corpus_id].reset_sentence_count
+
+			if train_with_doc:
+				self.corpus._train: FlairDataset = ConcatDataset([data for data in self.corpus.train_list])
+				self.corpus._dev: FlairDataset = ConcatDataset([data for data in self.corpus.dev_list])		
+				self.corpus._test: FlairDataset = ConcatDataset([data for data in self.corpus.test_list])		
 			# for key in pretrained_file_dict:
 			# pdb.set_trace()
 			for embedding in self.model.embeddings.embeddings:
@@ -235,6 +237,39 @@ class ReinforcementTrainer(ModelDistiller):
 			if 'bert' in embedding.__class__.__name__.lower():
 				self.use_bert=True
 				self.bert_tokenizer = embedding.tokenizer
+
+		if hasattr(self.model,'remove_x') and self.model.remove_x:
+			for corpus_id in range(len(self.corpus2id)):
+				for sent_id, sentence in enumerate(self.corpus.train_list[corpus_id]):
+					sentence.orig_sent=copy.deepcopy(sentence)
+					words = [x.text for x in sentence.tokens]
+					if '<EOS>' in words:
+						eos_id = words.index('<EOS>')
+						sentence.chunk_sentence(0,eos_id)
+					else:
+						pass
+				for sent_id, sentence in enumerate(self.corpus.dev_list[corpus_id]):
+					sentence.orig_sent=copy.deepcopy(sentence)
+					words = [x.text for x in sentence.tokens]
+					if '<EOS>' in words:
+						eos_id = words.index('<EOS>')
+						sentence.chunk_sentence(0,eos_id)
+					else:
+						pass
+				for sent_id, sentence in enumerate(self.corpus.test_list[corpus_id]):
+					sentence.orig_sent=copy.deepcopy(sentence)
+					words = [x.text for x in sentence.tokens]
+					if '<EOS>' in words:
+						eos_id = words.index('<EOS>')
+						sentence.chunk_sentence(0,eos_id)
+					else:
+						pass
+			self.corpus._train: FlairDataset = ConcatDataset([data for data in self.corpus.train_list])
+			self.corpus._dev: FlairDataset = ConcatDataset([data for data in self.corpus.dev_list])		
+			self.corpus._test: FlairDataset = ConcatDataset([data for data in self.corpus.test_list])		
+
+
+
 	def train(
 		self,
 		base_path: Union[Path, str],
@@ -458,6 +493,8 @@ class ReinforcementTrainer(ModelDistiller):
 		test_score_history = []
 		test_loss_history = []
 		train_loss_history = []
+		if self.n_gpu > 1:
+			self.model = torch.nn.DataParallel(self.model)
 
 		
 		score_list=[]
@@ -636,6 +673,11 @@ class ReinforcementTrainer(ModelDistiller):
 					
 					
 					for batch_no, student_input in enumerate(batch_loader):
+						# for group in optimizer.param_groups:
+						#   temp_lr = group["lr"]
+						# log.info('lr: '+str(temp_lr))
+						# print(self.language_weight.softmax(1))
+						# print(self.biaffine.U)
 						
 						start_time = time.time()
 						total_sent+=len(student_input)
@@ -646,7 +688,8 @@ class ReinforcementTrainer(ModelDistiller):
 							if self.model.use_decoder_timer:
 								decode_time=time.time() - self.model.time
 							optimizer.zero_grad()
-							
+							if self.n_gpu>1:
+								loss = loss.mean()  # mean() to average on multi-gpu parallel training
 							# Backward
 							if use_amp:
 								with amp.scale_loss(loss, optimizer) as scaled_loss:
@@ -669,7 +712,8 @@ class ReinforcementTrainer(ModelDistiller):
 
 						# depending on memory mode, embeddings are moved to CPU, GPU or deleted
 						store_embeddings(student_input, embeddings_storage_mode)
-						
+						if embeddings_storage_mode == "none" and hasattr(student_input,'features'):
+							del student_input.features
 						batch_time += time.time() - start_time
 						if batch_no % modulo == 0:
 							# print less information
@@ -718,6 +762,8 @@ class ReinforcementTrainer(ModelDistiller):
 
 						# depending on memory mode, embeddings are moved to CPU, GPU or deleted
 						store_embeddings(self.corpus.train, embeddings_storage_mode)
+						if embeddings_storage_mode == "none" and hasattr(self.corpus.train,'features'):
+							del self.corpus.train.features
 					log.info(f"==================Evaluating development set==================") 
 					if log_dev:
 						if macro_avg:
@@ -766,7 +812,8 @@ class ReinforcementTrainer(ModelDistiller):
 							current_score = dev_eval_result.main_score
 						# depending on memory mode, embeddings are moved to CPU, GPU or deleted
 						store_embeddings(self.corpus.dev, embeddings_storage_mode)
-
+						if embeddings_storage_mode == "none" and hasattr(self.corpus.dev,'features'):
+							del self.corpus.dev.features
 						if self.use_tensorboard:
 							writer.add_scalar("dev_loss", dev_loss, epoch + 1)
 							writer.add_scalar(
@@ -818,7 +865,8 @@ class ReinforcementTrainer(ModelDistiller):
 
 						# depending on memory mode, embeddings are moved to CPU, GPU or deleted
 						store_embeddings(self.corpus.test, embeddings_storage_mode)
-
+						if embeddings_storage_mode == "none" and hasattr(self.corpus.test,'features'):
+							del self.corpus.test.features
 						if self.use_tensorboard:
 							writer.add_scalar("test_loss", test_loss, epoch + 1)
 							writer.add_scalar(
@@ -850,7 +898,24 @@ class ReinforcementTrainer(ModelDistiller):
 					log.info(f"BAD EPOCHS (no improvement): {bad_epochs}")
 					log.info(f"GLOBAL BAD EPOCHS (no improvement): {bad_epochs2}")
 
-					
+					# if checkpoint is enable, save model at each epoch
+					# if checkpoint and not param_selection_mode:
+					#   if self.n_gpu>1:
+					#       self.model.module.save_checkpoint(
+					#           base_path / "checkpoint.pt",
+					#           optimizer.state_dict(),
+					#           scheduler.state_dict(),
+					#           epoch + 1,
+					#           train_loss,
+					#       )
+					#   else:
+					#       self.model.save_checkpoint(
+					#           base_path / "checkpoint.pt",
+					#           optimizer.state_dict(),
+					#           scheduler.state_dict(),
+					#           epoch + 1,
+					#           train_loss,
+					#       )
 
 					# if we use dev data, remember best model based on dev evaluation score
 					if (
@@ -859,8 +924,11 @@ class ReinforcementTrainer(ModelDistiller):
 						and current_score >= baseline_score
 					):
 						log.info(f"==================Saving the current overall best model: {current_score}==================") 
-						self.model.save(base_path / "best-model.pt")
-						self.controller.save(base_path/ "controller.pt")
+						if self.n_gpu>1:
+							self.model.module.save(base_path / "best-model.pt")
+						else:
+							self.model.save(base_path / "best-model.pt")
+							self.controller.save(base_path/ "controller.pt")
 						baseline_score = current_score
 						
 
@@ -1110,12 +1178,12 @@ class ReinforcementTrainer(ModelDistiller):
 				selection = torch.ones_like(selection)
 
 			# for idx in range(len(selection)):
-			# 	if sentences[idx].lang_id == 0:
-			# 		selection[idx,0]=1
-			# 		selection[idx,1]=0
-			# 	if sentences[idx].lang_id == 1:
-			# 		selection[idx,0]=0
-			# 		selection[idx,1]=1
+			#   if sentences[idx].lang_id == 0:
+			#       selection[idx,0]=1
+			#       selection[idx,1]=0
+			#   if sentences[idx].lang_id == 1:
+			#       selection[idx,0]=0
+			#       selection[idx,1]=1
 
 			if hasattr(sentences,'embedding_mask'):
 				sentences.previous_embedding_mask = sentences.embedding_mask
@@ -1144,55 +1212,55 @@ class ReinforcementTrainer(ModelDistiller):
 
 
 	# def gpu_friendly_assign_embedding(self,loaders):
-	# 	# pdb.set_trace()
-	# 	for embedding in self.model.embeddings.embeddings:
-	# 		if ('WordEmbeddings' not in embedding.__class__.__name__ and 'Char' not in embedding.__class__.__name__ and 'Lemma' not in embedding.__class__.__name__ and 'POS' not in embedding.__class__.__name__) and not (hasattr(embedding,'fine_tune') and embedding.fine_tune):
-	# 			print(embedding.name, count_parameters(embedding))
-	# 			# 
-	# 			embedding.to(flair.device)
-	# 			for loader in loaders:
-	# 				for sentences in loader:
-	# 					lengths: List[int] = [len(sentence.tokens) for sentence in sentences]
-	# 					longest_token_sequence_in_batch: int = max(lengths)
-	# 					# if longest_token_sequence_in_batch>100:
-	# 					# 	pdb.set_trace()
-	# 					embedding.embed(sentences)
-	# 					store_embeddings(sentences, self.embeddings_storage_mode)
-	# 			embedding=embedding.to('cpu')
-	# 		else:
-	# 			embedding=embedding.to(flair.device)
-	# 	# torch.cuda.empty_cache()
-	# 	log.info("Finished Embeddings Assignments")
-	# 	return 
+	#   # pdb.set_trace()
+	#   for embedding in self.model.embeddings.embeddings:
+	#       if ('WordEmbeddings' not in embedding.__class__.__name__ and 'Char' not in embedding.__class__.__name__ and 'Lemma' not in embedding.__class__.__name__ and 'POS' not in embedding.__class__.__name__) and not (hasattr(embedding,'fine_tune') and embedding.fine_tune):
+	#           print(embedding.name, count_parameters(embedding))
+	#           # 
+	#           embedding.to(flair.device)
+	#           for loader in loaders:
+	#               for sentences in loader:
+	#                   lengths: List[int] = [len(sentence.tokens) for sentence in sentences]
+	#                   longest_token_sequence_in_batch: int = max(lengths)
+	#                   # if longest_token_sequence_in_batch>100:
+	#                   #   pdb.set_trace()
+	#                   embedding.embed(sentences)
+	#                   store_embeddings(sentences, self.embeddings_storage_mode)
+	#           embedding=embedding.to('cpu')
+	#       else:
+	#           embedding=embedding.to(flair.device)
+	#   # torch.cuda.empty_cache()
+	#   log.info("Finished Embeddings Assignments")
+	#   return 
 	# def assign_predicted_embeddings(self,doc_dict,embedding,file_name):
-	# 	# torch.cuda.empty_cache()
-	# 	lm_file = h5py.File(file_name, "r")
-	# 	for key in doc_dict:
-	# 		if key == 'start':
-	# 			for i, sentence in enumerate(doc_dict[key]):
-	# 				for token, token_idx in zip(sentence.tokens, range(len(sentence.tokens))):
-	# 					word_embedding = torch.zeros(embedding.embedding_length).float()
-	# 					word_embedding = torch.FloatTensor(word_embedding)
+	#   # torch.cuda.empty_cache()
+	#   lm_file = h5py.File(file_name, "r")
+	#   for key in doc_dict:
+	#       if key == 'start':
+	#           for i, sentence in enumerate(doc_dict[key]):
+	#               for token, token_idx in zip(sentence.tokens, range(len(sentence.tokens))):
+	#                   word_embedding = torch.zeros(embedding.embedding_length).float()
+	#                   word_embedding = torch.FloatTensor(word_embedding)
 
-	# 					token.set_embedding(embedding.name, word_embedding)
-	# 			continue
-	# 		group = lm_file[key]
-	# 		num_sentences = len(list(group.keys()))
-	# 		sentences_emb = [group[str(i)][...] for i in range(num_sentences)]
-	# 		try: 
-	# 			assert len(doc_dict[key])==len(sentences_emb)
-	# 		except:
-	# 			pdb.set_trace()
-	# 		for i, sentence in enumerate(doc_dict[key]):
-	# 			for token, token_idx in zip(sentence.tokens, range(len(sentence.tokens))):
-	# 				word_embedding = sentences_emb[i][token_idx]
-	# 				word_embedding = torch.from_numpy(word_embedding).view(-1)
+	#                   token.set_embedding(embedding.name, word_embedding)
+	#           continue
+	#       group = lm_file[key]
+	#       num_sentences = len(list(group.keys()))
+	#       sentences_emb = [group[str(i)][...] for i in range(num_sentences)]
+	#       try: 
+	#           assert len(doc_dict[key])==len(sentences_emb)
+	#       except:
+	#           pdb.set_trace()
+	#       for i, sentence in enumerate(doc_dict[key]):
+	#           for token, token_idx in zip(sentence.tokens, range(len(sentence.tokens))):
+	#               word_embedding = sentences_emb[i][token_idx]
+	#               word_embedding = torch.from_numpy(word_embedding).view(-1)
 
-	# 				token.set_embedding(embedding.name, word_embedding)
-	# 			store_embeddings([sentence], 'cpu')
-	# 		# for idx, sentence in enumerate(doc_dict[key]):
-	# 	log.info("Loaded predicted embeddings: "+file_name)
-	# 	return 
+	#               token.set_embedding(embedding.name, word_embedding)
+	#           store_embeddings([sentence], 'cpu')
+	#       # for idx, sentence in enumerate(doc_dict[key]):
+	#   log.info("Loaded predicted embeddings: "+file_name)
+	#   return 
 	
 	def resort(self,loader,is_crf=False, is_posterior=False, is_token_att=False):
 		for batch in loader:
@@ -1322,7 +1390,7 @@ class ReinforcementTrainer(ModelDistiller):
 		return loader
 		
 	def final_test(
-		self, base_path: Path, eval_mini_batch_size: int, num_workers: int = 8, overall_test: bool = True, quiet_mode: bool = False, nocrf: bool = False, predict_posterior: bool = False, debug: bool = False, keep_embedding: int = -1, sort_data=False,
+		self, base_path: Path, eval_mini_batch_size: int, num_workers: int = 8, overall_test: bool = True, quiet_mode: bool = False, nocrf: bool = False, predict_posterior: bool = False, debug: bool = False, keep_embedding: int = -1, sort_data=False, mst = False
 	):
 
 		log_line(log)
@@ -1353,7 +1421,7 @@ class ReinforcementTrainer(ModelDistiller):
 				print(name_list)
 		except:
 			pdb.set_trace()
-		# pdb.set_trace()
+
 		# Since there are a lot of embeddings, we keep these embeddings to cpu in order to avoid OOM
 		for name, module in self.model.named_modules():
 			if 'embeddings' in name or name == '':
@@ -1370,8 +1438,9 @@ class ReinforcementTrainer(ModelDistiller):
 					setattr(self.model, name, torch.nn.parameter.Parameter(getattr(self.model,name).to(flair.device)))
 
 		# if hasattr(self.model,'transitions'):
-		# 	self.model.transitions = torch.nn.parameter.Parameter(self.model.transitions.to(flair.device))
-		
+		#   self.model.transitions = torch.nn.parameter.Parameter(self.model.transitions.to(flair.device))
+		if mst == True:
+			self.model.is_mst=mst
 		for embedding in self.model.embeddings.embeddings:
 			embedding.to('cpu')
 		if debug:

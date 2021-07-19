@@ -5,6 +5,9 @@ The code is for our ACL-IJCNLP 2021 paper: [Automated Concatenation of Embedding
 
 ACE is a framework for automatically searching a good embedding concatenation for structured prediction tasks and achieving state-of-the-art accuracy. The code is based on [flair version 0.4.3](https://github.com/flairNLP/flair) with a lot of modifications.
 
+**News**
+ - **2021-07-19** New versions of document-level SOTA NER models are released, see [Instructions for Reproducing Results](#Guide_for_Reproducing_Results) for more details.
+
 ## Comparison with State-of-the-Art
 
 | Task | Language | Dataset | ACE | Previous best |
@@ -38,6 +41,8 @@ ACE is a framework for automatically searching a good embedding concatenation fo
 
 - [Requirements](#requirements)
 - [Pretrained Models](#Pretrained-Models)
+  - [Instructions for Reproducing Results](#Guide_for_Reproducing_Results)
+    <!-- - [Named Entity Recognition](#Named_Entity_Recognition) -->
 - [Download Embeddings](#Download-Embeddings)
   <!-- - [Dump Fine-tuned Embeddings in the Pretrained Models ](#Dump-Fine-tuned-Embeddings-in-the-Pretrained-Models) -->
 - [Training](#training)
@@ -123,6 +128,13 @@ Here we take CoNLL 2003 English NER as an example. The `$config_file` is `config
 <!-- ### Dump Fine-tuned Embeddings in the Pretrained Models 
 
 TODO -->
+
+### Instructions for Reproducing Results
+
+Currently, we give an instruction for reproducing the results of our NER models is in [named_entity_recognition.md](resources/docs/named_entity_recognition.md). Other tasks can simply follow the guide of [named_entity_recognition.md](resources/docs/named_entity_recognition.md) to reproduce the results. 
+
+<!-- #### Named Entity Recognition
+Instructions: [named_entity_recognition.md](resources/docs/named_entity_recognition.md) -->
 
 ---
 
@@ -328,5 +340,5 @@ If you feel the code helpful, please cite:
 
 ## Contact 
 
-Please email your questions or comments to [Xinyu Wang](http://wangxinyu0922.github.io/).
+Feel free to email your questions or comments to issues or to [Xinyu Wang](http://wangxinyu0922.github.io/).
 
