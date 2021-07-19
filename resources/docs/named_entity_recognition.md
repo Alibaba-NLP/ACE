@@ -22,7 +22,7 @@ To use the model predict on your own file, run:
 ```bash
 CUDA_VISIBLE_DEVICES=0 python train.py --config config/conll_03_english.yaml --parse --target_dir $dir --keep_order
 ```
-Note that you may need to preprocess your file with the dummy tags, please check #12 for more details.
+Note that you may need to preprocess your file with the dummy tags, please check this [issue](https://github.com/Alibaba-NLP/ACE/issues/12) for more details.
 
 ---
 
@@ -46,7 +46,7 @@ To use the model predict on your own file, run:
 CUDA_VISIBLE_DEVICES=0 python train.py --config config/doc_ner_best.yaml --parse --target_dir $dir --keep_order
 ```
 Note that:
- - You may need to preprocess your file with the dummy tags for prediction, please check this [issue](#12) for more details.
+ - You may need to preprocess your file with the dummy tags for prediction, please check this [issue](https://github.com/Alibaba-NLP/ACE/issues/12) for more details.
  - You need to pre-extract document-level features of `bert-base-cased`, `bert-large-cased` and `bert-base-multilingual-cased` embeddings. Please follow [(Optional) Extract Document Features](https://github.com/Alibaba-NLP/ACE#optional-extract-document-features).
 
 
@@ -70,7 +70,7 @@ To use the model predict on your own file, run:
 ```bash
 CUDA_VISIBLE_DEVICES=0 python train.py --config config/conll_03_de_model.yaml --parse --target_dir $dir --keep_order
 ```
-Note that you may need to preprocess your file with the dummy tags, please check #12 for more details.
+Note that you may need to preprocess your file with the dummy tags, please check this [issue](https://github.com/Alibaba-NLP/ACE/issues/12) for more details.
 
 ---
 
@@ -94,7 +94,7 @@ To use the model predict on your own file, run:
 CUDA_VISIBLE_DEVICES=0 python train.py --config config/doc_ner_best.yaml --parse --target_dir $dir --keep_order
 ```
 Note that:
- - You may need to preprocess your file with the dummy tags for prediction, please check #12 for more details.
+ - You may need to preprocess your file with the dummy tags for prediction, please check this [issue](https://github.com/Alibaba-NLP/ACE/issues/12) for more details.
  - You need to pre-extract document-level features of `bert-base-german-dbmdz-cased` and `bert-base-multilingual-cased` embeddings. Please follow [(Optional) Extract Document Features](https://github.com/Alibaba-NLP/ACE#optional-extract-document-features).
 
 
@@ -121,7 +121,7 @@ To use the model predict on your own file, run:
 CUDA_VISIBLE_DEVICES=0 python train.py --config config/doc_ner_nl_best.yaml --parse --target_dir $dir --keep_order
 ```
 Note that:
- - You may need to preprocess your file with the dummy tags for prediction, please check #12 for more details.
+ - You may need to preprocess your file with the dummy tags for prediction, please check this [issue](https://github.com/Alibaba-NLP/ACE/issues/12) for more details.
  - You need to pre-extract document-level features of `bert-base-dutch-cased-finetuned-conll2002-ner` and `bert-base-multilingual-cased` embeddings. Please follow [(Optional) Extract Document Features](https://github.com/Alibaba-NLP/ACE#optional-extract-document-features).
 
 
@@ -148,5 +148,5 @@ To use the model predict on your own file, run:
 CUDA_VISIBLE_DEVICES=0 python train.py --config config/doc_ner_es_best.yaml --parse --target_dir $dir --keep_order
 ```
 Note that:
- - You may need to preprocess your file with the dummy tags for prediction, please check #12 for more details.
+ - You may need to preprocess your file with the dummy tags for prediction, please check this [issue](https://github.com/Alibaba-NLP/ACE/issues/12) for more details.
  - You need to pre-extract document-level features of `bert-spanish-cased-finetuned-ner` and `bert-base-multilingual-cased` embeddings. Please follow [(Optional) Extract Document Features](https://github.com/Alibaba-NLP/ACE#optional-extract-document-features).

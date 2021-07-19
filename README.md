@@ -298,7 +298,7 @@ CUDA_VISIBLE_DEVICES=0 python train.py --config $config_file --parse --target_di
 ```
 
 The format of the file should be `column_format={0: 'text', 1:'ner'}` for sequence labeling or you can modifiy line 232 in `train.py`. The parsed results will be in `outputs/`.
-Note that you may need to preprocess your file with the dummy tags for prediction, please check this [issue](#12) for more details.
+Note that you may need to preprocess your file with the dummy tags for prediction, please check this [issue](https://github.com/Alibaba-NLP/ACE/issues/12) for more details.
 
 ## Config File
 
