@@ -46,7 +46,7 @@ To use the model predict on your own file, run:
 CUDA_VISIBLE_DEVICES=0 python train.py --config config/doc_ner_best.yaml --parse --target_dir $dir --keep_order
 ```
 Note that:
- - You may need to preprocess your file with the dummy tags for prediction, please check #12 for more details.
+ - You may need to preprocess your file with the dummy tags for prediction, please check this [issue](#12) for more details.
  - You need to pre-extract document-level features of `bert-base-cased`, `bert-large-cased` and `bert-base-multilingual-cased` embeddings. Please follow [(Optional) Extract Document Features](https://github.com/Alibaba-NLP/ACE#optional-extract-document-features).
 
 
