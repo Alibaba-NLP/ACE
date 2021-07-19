@@ -250,7 +250,7 @@ The config `config/en-bert-finetune-ptb.yaml` can be applied to fine-tuning othe
 
 ### (Optional) Extract Document Features
 
-To archieve state-of-the-art accuracy of **NER**, one optional approach is extracting the document-level features from the transformer-based embeddings. Then take the features as an embedding candidate of ACE. We follow the embedding extraction approach of [(Yu et al., 2020)](https://arxiv.org/pdf/2005.07150.pdf). We use the sentences with a single word `-DOCSTART-` to split the documents. For CoNLL 2002 Spanish, there is not `-DOCSTART-` sentences. Therefore, we add a `-DOCSTART-` sentence for every 25 sentences. For CoNLL 2002 Dutch, the `-DOCSTART-` is in the first sentence of the document, please split the `-DOCSTART-` token into a single sentence. For example:
+To archieve state-of-the-art accuracy of **NER**, one optional approach is extracting the document-level features from the transformer-based embeddings. Then take the features as an embedding candidate of ACE. We follow the embedding extraction approach of [Yu et al., 2020](https://arxiv.org/pdf/2005.07150.pdf). We use the sentences with a single word `-DOCSTART-` to split the documents. For CoNLL 2002 Spanish, there is not `-DOCSTART-` sentences. Therefore, we add a `-DOCSTART-` sentence for every 25 sentences. For CoNLL 2002 Dutch, the `-DOCSTART-` is in the first sentence of the document, please split the `-DOCSTART-` token into a single sentence. For example:
 
 ```
 -DOCSTART- -DOCSTART- O
