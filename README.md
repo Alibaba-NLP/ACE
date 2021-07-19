@@ -6,7 +6,7 @@ The code is for our ACL-IJCNLP 2021 paper: [Automated Concatenation of Embedding
 ACE is a framework for automatically searching a good embedding concatenation for structured prediction tasks and achieving state-of-the-art accuracy. The code is based on [flair version 0.4.3](https://github.com/flairNLP/flair) with a lot of modifications.
 
 ## News
- - **2021-07-19**: New versions of document-level SOTA NER models are released, see [Instructions for Reproducing Results](#Guide_for_Reproducing_Results) for more details.
+ - **2021-07-19**: New versions of document-level SOTA NER models are released, see [Instructions for Reproducing Results](#Instructions_for_Reproducing_Results) for more details.
 
 ## Comparison with State-of-the-Art
 
@@ -41,7 +41,7 @@ ACE is a framework for automatically searching a good embedding concatenation fo
 
 - [Requirements](#requirements)
 - [Pretrained Models](#Pretrained-Models)
-  - [Instructions for Reproducing Results](#Guide_for_Reproducing_Results)
+  - [Instructions for Reproducing Results](#Instructions_for_Reproducing_Results)
     <!-- - [Named Entity Recognition](#Named_Entity_Recognition) -->
 - [Download Embeddings](#Download-Embeddings)
   <!-- - [Dump Fine-tuned Embeddings in the Pretrained Models ](#Dump-Fine-tuned-Embeddings-in-the-Pretrained-Models) -->
