@@ -17,7 +17,7 @@ CUDA_VISIBLE_DEVICES=0 python train.py --config config/conll_03_english.yaml --t
 #### Training 
 
 ##### Finetune Embeddings
-To train the model by yourself, firstly, training finetuned transformer-based models (i.e. BERT and M-BERT) are required. Train the following three files:
+To train the model by yourself, firstly, training finetuned transformer-based models (i.e. BERT and M-BERT) are required. Train the following models:
 ```bash
 CUDA_VISIBLE_DEVICES=0 python train.py --config config/mbert-en-ner-finetune.yaml
 CUDA_VISIBLE_DEVICES=0 python train.py --config config/bert-en-ner-finetune.yaml
@@ -63,7 +63,7 @@ CUDA_VISIBLE_DEVICES=0 python train.py --config config/doc_ner_best.yaml --test
 #### Training 
 
 ##### Finetune Document-Level Embeddings
-To train the model by yourself, firstly, training finetuned transformer-based models (i.e. RoBERTa, XLM-R, XLNET) are required. Train the following three files:
+To train the model by yourself, firstly, training finetuned transformer-based models (i.e. RoBERTa, XLM-R, XLNET) are required. Train the following models:
 ```bash
 CUDA_VISIBLE_DEVICES=0 python train.py --config config/xlnet-doc-en-ner-finetune.yaml
 CUDA_VISIBLE_DEVICES=0 python train.py --config config/xlmr-doc-en-ner-finetune.yaml
@@ -122,7 +122,7 @@ CUDA_VISIBLE_DEVICES=0 python train.py --config config/conll_03_de_model.yaml --
 #### Training 
 
 ##### Finetune Embeddings
-To train the model by yourself, firstly, training finetuned transformer-based models (i.e. BERT and M-BERT) are required. Train the following three files:
+To train the model by yourself, firstly, training finetuned transformer-based models (i.e. BERT and M-BERT) are required. Train the following models:
 ```bash
 CUDA_VISIBLE_DEVICES=0 python train.py --config config/mbert-de-03-ner-finetune.yaml
 CUDA_VISIBLE_DEVICES=0 python train.py --config config/bert-de-03-ner-finetune.yaml
@@ -168,7 +168,7 @@ CUDA_VISIBLE_DEVICES=0 python train.py --config config/doc_ner_de_06_best.yaml -
 
 #### Training 
 ##### Finetune Document-Level Embeddings
-To train the model by yourself, firstly, training finetuned transformer-based models (i.e. XLM-R) are required. Train the following three files:
+To train the model by yourself, firstly, training finetuned transformer-based models (i.e. XLM-R) are required. Train the following models:
 ```bash
 CUDA_VISIBLE_DEVICES=0 python train.py --config config/xlmr-doc-de-03-ner-finetune.yaml # for version 2003
 CUDA_VISIBLE_DEVICES=0 python train.py --config config/xlmr-doc-de-06-ner-finetune.yaml # for version 2006
@@ -213,7 +213,7 @@ CUDA_VISIBLE_DEVICES=0 python train.py --config config/doc_ner_nl_best.yaml --te
 #### Training 
 
 ##### Finetune Document-Level Embeddings
-To train the model by yourself, firstly, training finetuned transformer-based models (i.e. XLM-R) are required. Train the following three files:
+To train the model by yourself, firstly, training finetuned transformer-based models (i.e. XLM-R) are required. Train the following model:
 ```bash
 CUDA_VISIBLE_DEVICES=0 python train.py --config config/xlmr-doc-nl-ner-finetune.yaml 
 ```
@@ -255,7 +255,7 @@ CUDA_VISIBLE_DEVICES=0 python train.py --config config/doc_ner_es_best.yaml --te
 #### Training
 
 ##### Finetune Document-Level Embeddings
-To train the model by yourself, firstly, training finetuned transformer-based models (i.e. XLM-R) are required. Train the following three files:
+To train the model by yourself, firstly, training finetuned transformer-based models (i.e. XLM-R) are required. Train the following model:
 ```bash
 CUDA_VISIBLE_DEVICES=0 python train.py --config config/xlmr-doc-es-ner-finetune.yaml 
 ```
