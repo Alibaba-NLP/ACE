@@ -331,11 +331,14 @@ The config files are based on yaml format.
 ## Citing Us
 If you feel the code helpful, please cite:
 ```
-@article{wang2020automated,
-  title={Automated Concatenation of Embeddings for Structured Prediction},
-  author={Wang, Xinyu and Jiang, Yong and Bach, Nguyen and Wang, Tao and Huang, Zhongqiang and Huang, Fei and Tu, Kewei},
-  journal={arXiv preprint arXiv:2010.05006},
-  year={2020}
+@inproceedings{wang2020automated,
+    title = "{{Automated Concatenation of Embeddings for Structured Prediction}}",
+    author = "Wang, Xinyu and Jiang, Yong and Bach, Nguyen and Wang, Tao and Huang, Zhongqiang and Huang, Fei and Tu, Kewei",
+    booktitle = "{the Joint Conference of the 59th Annual Meeting of the Association for Computational Linguistics and the 11th International Joint Conference on Natural Language Processing (\textbf{ACL-IJCNLP 2021})}",
+    month = aug,
+    year = "2021",
+    publisher = "Association for Computational Linguistics",
+    
 }
 ```
 
