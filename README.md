@@ -5,6 +5,22 @@ The code is for our ACL-IJCNLP 2021 paper: [Automated Concatenation of Embedding
 
 ACE is a framework for automatically searching a good embedding concatenation for structured prediction tasks and achieving state-of-the-art accuracy. The code is based on [flair version 0.4.3](https://github.com/flairNLP/flair) with a lot of modifications.
 
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/automated-concatenation-of-embeddings-for-1/part-of-speech-tagging-on-ark)](https://paperswithcode.com/sota/part-of-speech-tagging-on-ark?p=automated-concatenation-of-embeddings-for-1)
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/automated-concatenation-of-embeddings-for-1/chunking-on-conll-2000)](https://paperswithcode.com/sota/chunking-on-conll-2000?p=automated-concatenation-of-embeddings-for-1)
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/automated-concatenation-of-embeddings-for-1/named-entity-recognition-on-conll-2002-dutch)](https://paperswithcode.com/sota/named-entity-recognition-on-conll-2002-dutch?p=automated-concatenation-of-embeddings-for-1)
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/automated-concatenation-of-embeddings-for-1/named-entity-recognition-on-conll-2002)](https://paperswithcode.com/sota/named-entity-recognition-on-conll-2002?p=automated-concatenation-of-embeddings-for-1)
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/automated-concatenation-of-embeddings-for-1/chunking-on-conll-2003-english)](https://paperswithcode.com/sota/chunking-on-conll-2003-english?p=automated-concatenation-of-embeddings-for-1)
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/automated-concatenation-of-embeddings-for-1/named-entity-recognition-ner-on-conll-2003)](https://paperswithcode.com/sota/named-entity-recognition-ner-on-conll-2003?p=automated-concatenation-of-embeddings-for-1)
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/automated-concatenation-of-embeddings-for-1/chunking-on-conll-2003-german)](https://paperswithcode.com/sota/chunking-on-conll-2003-german?p=automated-concatenation-of-embeddings-for-1)
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/automated-concatenation-of-embeddings-for-1/semantic-dependency-parsing-on-dm)](https://paperswithcode.com/sota/semantic-dependency-parsing-on-dm?p=automated-concatenation-of-embeddings-for-1)
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/automated-concatenation-of-embeddings-for-1/semantic-dependency-parsing-on-pas)](https://paperswithcode.com/sota/semantic-dependency-parsing-on-pas?p=automated-concatenation-of-embeddings-for-1)
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/automated-concatenation-of-embeddings-for-1/chunking-on-penn-treebank)](https://paperswithcode.com/sota/chunking-on-penn-treebank?p=automated-concatenation-of-embeddings-for-1)
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/automated-concatenation-of-embeddings-for-1/semantic-dependency-parsing-on-psd)](https://paperswithcode.com/sota/semantic-dependency-parsing-on-psd?p=automated-concatenation-of-embeddings-for-1)
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/automated-concatenation-of-embeddings-for-1/part-of-speech-tagging-on-ritter)](https://paperswithcode.com/sota/part-of-speech-tagging-on-ritter?p=automated-concatenation-of-embeddings-for-1)
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/automated-concatenation-of-embeddings-for-1/dependency-parsing-on-penn-treebank)](https://paperswithcode.com/sota/dependency-parsing-on-penn-treebank?p=automated-concatenation-of-embeddings-for-1)
+
+
+
 ## News
  - **2021-07-19**: New versions of document-level SOTA NER models are released, see [Instructions for Reproducing Results](#Instructions-for-Reproducing-Results) for more details.
 
