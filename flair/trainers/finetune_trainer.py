@@ -62,7 +62,9 @@ class ModelFinetuner(ModelDistiller):
 		clip_sentences: int = -1,
 		remove_sentences: bool = False,
 		assign_doc_id: bool = False,
+		train_with_doc: bool = False,
 		pretrained_file_dict: dict = {},
+		sentence_level_pretrained_data: bool = False,
 	):
 		"""
 		Initialize a model trainer
@@ -93,7 +95,7 @@ class ModelFinetuner(ModelDistiller):
 			sent_each_dataset=sent_per_set/total_sents
 			exp_sent_each_dataset=sent_each_dataset.pow(0.7)
 			sent_sample_prob=exp_sent_each_dataset/exp_sent_each_dataset.sum()
-
+		self.sentence_level_pretrained_data=sentence_level_pretrained_data
 		if assign_doc_id:
 			doc_sentence_dict = {}
 			same_corpus_mapping = {'CONLL_06_GERMAN': 'CONLL_03_GERMAN_NEW',
@@ -107,45 +109,43 @@ class ModelFinetuner(ModelDistiller):
 					corpus_name = same_corpus_mapping[self.corpus.targets[corpus_id]].lower()+'_'
 				else:
 					corpus_name = self.corpus.targets[corpus_id].lower()+'_'
-				doc_name = 'train_'
-				doc_idx = -1
-				for sentence in self.corpus.train_list[corpus_id]:
-					if '-DOCSTART-' in sentence[0].text:
-						doc_idx+=1
-						doc_key='start'
-					else:
-						doc_key=corpus_name+doc_name+str(doc_idx)
-					if doc_key not in doc_sentence_dict:
-						doc_sentence_dict[doc_key]=[]
-					doc_sentence_dict[doc_key].append(sentence)
-				doc_name = 'dev_'
-				doc_idx = -1
-				for sentence in self.corpus.dev_list[corpus_id]:
-					if '-DOCSTART-' in sentence[0].text:
-						doc_idx+=1
-						doc_key='start'
-					else:
-						doc_key=corpus_name+doc_name+str(doc_idx)
-					if doc_key not in doc_sentence_dict:
-						doc_sentence_dict[doc_key]=[]
-					doc_sentence_dict[doc_key].append(sentence)
-				doc_name = 'test_'
-				doc_idx = -1
-				for sentence in self.corpus.test_list[corpus_id]:
-					if '-DOCSTART-' in sentence[0].text:
-						doc_idx+=1
-						doc_key='start'
-					else:
-						doc_key=corpus_name+doc_name+str(doc_idx)
-					if doc_key not in doc_sentence_dict:
-						doc_sentence_dict[doc_key]=[]
-					doc_sentence_dict[doc_key].append(sentence)
+				doc_sentence_dict = self.assign_documents(self.corpus.train_list[corpus_id], 'train_', doc_sentence_dict, corpus_name, train_with_doc)
+				doc_sentence_dict = self.assign_documents(self.corpus.dev_list[corpus_id], 'dev_', doc_sentence_dict, corpus_name, train_with_doc)
+				doc_sentence_dict = self.assign_documents(self.corpus.test_list[corpus_id], 'test_', doc_sentence_dict, corpus_name, train_with_doc)
+				if train_with_doc:
+					new_sentences=[]
+					for sentid, sentence in enumerate(self.corpus.train_list[corpus_id]):
+						if sentence[0].text=='-DOCSTART-':
+							continue
+						new_sentences.append(sentence)
+					self.corpus.train_list[corpus_id].sentences = new_sentences.copy()
+					self.corpus.train_list[corpus_id].reset_sentence_count
+
+					new_sentences=[]
+					for sentid, sentence in enumerate(self.corpus.dev_list[corpus_id]):
+						if sentence[0].text=='-DOCSTART-':
+							continue
+						new_sentences.append(sentence)
+					self.corpus.dev_list[corpus_id].sentences = new_sentences.copy()
+					self.corpus.dev_list[corpus_id].reset_sentence_count
+
+					new_sentences=[]
+					for sentid, sentence in enumerate(self.corpus.test_list[corpus_id]):
+						if sentence[0].text=='-DOCSTART-':
+							continue
+						new_sentences.append(sentence)
+					self.corpus.test_list[corpus_id].sentences = new_sentences.copy()
+					self.corpus.test_list[corpus_id].reset_sentence_count
+
+			if train_with_doc:
+				self.corpus._train: FlairDataset = ConcatDataset([data for data in self.corpus.train_list])
+				self.corpus._dev: FlairDataset = ConcatDataset([data for data in self.corpus.dev_list])     
+				self.corpus._test: FlairDataset = ConcatDataset([data for data in self.corpus.test_list])       
 			# for key in pretrained_file_dict:
 			# pdb.set_trace()
 			for embedding in self.model.embeddings.embeddings:
 				if embedding.name in pretrained_file_dict:
 					self.assign_predicted_embeddings(doc_sentence_dict,embedding,pretrained_file_dict[embedding.name])
-
 		for corpus_name in self.corpus2id:
 			i = self.corpus2id[corpus_name]
 			for sentence in self.corpus.train_list[i]:

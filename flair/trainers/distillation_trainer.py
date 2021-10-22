@@ -651,6 +651,28 @@ class ModelDistiller(ModelTrainer):
 			"train_loss_history": train_loss_history,
 			"dev_loss_history": dev_loss_history,
 		}
+		
+	def assign_documents(self, data_list, doc_name, doc_sentence_dict, corpus_name, train_with_doc = False):
+		doc_idx = -1
+		for sentence in data_list:
+			if '-DOCSTART-' in sentence[0].text:
+				doc_idx+=1
+				doc_key='start'
+			else:
+				doc_key=corpus_name+doc_name+str(doc_idx)
+			if self.sentence_level_pretrained_data:
+				doc_idx+=1
+				doc_key=corpus_name+doc_name+str(doc_idx)
+			
+			if doc_key not in doc_sentence_dict:
+				doc_sentence_dict[doc_key]=[]
+			doc_sentence_dict[doc_key].append(sentence)
+			if train_with_doc:
+				sentence.doc_name = doc_key
+				sentence.doc = doc_sentence_dict[doc_key]
+				sentence.doc_pos = len(doc_sentence_dict[doc_key])-1
+		return doc_sentence_dict
+
 	@property
 	def interpolation(self):
 		try:
