@@ -3654,7 +3654,7 @@ class TransformerWordEmbeddings(TokenEmbeddings):
                     left_length = doc_sent.doc_sent_start
                     right_length = len(doc_subtokens) - doc_sent.doc_sent_end
                     sentence_length = doc_sent.doc_sent_end - doc_sent.doc_sent_start
-                    half_context_length = int((max_sequence_length - sentence_length) / 2)
+                    half_context_length = max(int((max_sequence_length - sentence_length) / 2),0)
 
                     if left_length < right_length:
                         left_context_length = min(left_length, half_context_length)
@@ -3662,7 +3662,10 @@ class TransformerWordEmbeddings(TokenEmbeddings):
                     else:
                         right_context_length = min(right_length, half_context_length)
                         left_context_length = min(left_length, max_sequence_length - right_context_length - sentence_length)
-
+                    if left_context_length<0:
+                        left_context_length=0
+                    if right_context_length<0:
+                        right_context_length=0
 
                     doc_offset = doc_sent.doc_sent_start - left_context_length
                     target_tokens = doc_subtokens[doc_offset : doc_sent.doc_sent_end + right_context_length]
