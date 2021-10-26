@@ -2266,8 +2266,8 @@ class FastSequenceTagger(SequenceTagger):
 					if prediction_mode and batch_no % (modulo) == 0:
 						log.info(f"{batch_no}/{len(data_loader)}")
 				store_embeddings(batch, embeddings_storage_mode)
-				if embeddings_storage_mode == "none":
-					del batch.features
+				if embeddings_storage_mode == "none" and hasattr(batch,'features'):
+					batch.features = {}
 			if speed_test:
 				end_time = time.time()
 				print(data_loader.num_examples/(end_time-start_time))
