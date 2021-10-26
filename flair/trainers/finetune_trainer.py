@@ -1492,7 +1492,6 @@ class ModelFinetuner(ModelDistiller):
 		
 
 		self.model.eval()
-		
 		if quiet_mode:
 			#blockPrint()
 			log.disabled=True
@@ -1513,6 +1512,17 @@ class ModelFinetuner(ModelDistiller):
 			self.model.predict_posterior=True
 		if keep_embedding>-1:
 			self.model.keep_embedding=keep_embedding
+
+		for embedding in self.model.embeddings.embeddings:
+			# manually fix the bug for the tokenizer becoming None
+			if hasattr(embedding,'tokenizer') and embedding.tokenizer is None:
+				from transformers import AutoTokenizer
+				name = embedding.name
+				if '_v2doc' in name:
+					name = name.replace('_v2doc','')
+				if '_extdoc' in name:
+					name = name.replace('_extdoc','')
+				embedding.tokenizer = AutoTokenizer.from_pretrained(name, do_lower_case=True)
 
 		if overall_test:
 			loader=ColumnDataLoader(list(self.corpus.test),eval_mini_batch_size, use_bert=self.use_bert,tokenizer=self.bert_tokenizer, model = self.model, sentence_level_batch = self.sentence_level_batch, sort_data=sort_data)
