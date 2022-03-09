@@ -242,7 +242,8 @@ Note that:
 Currently, we release the model for document-level.
 
 ### Document-level Model
-Download the [doc_ner_es_best.zip](https://1drv.ms/u/s!Am53YNAPSsodg9cTi-HkIfGWHK_DPA?e=qD5BPK) at [OneDrive](https://1drv.ms/u/s!Am53YNAPSsodg810NxHQcrJpcNIOig?e=FRsJNR). Unzip the file and move the unzipped repository to `resources/taggers`. 
+
+Download the [es_doc_ner_new.zip](https://1drv.ms/u/s!Am53YNAPSsodg9g390_8r5G101EYDQ?e=iTZLhr) at [OneDrive](https://1drv.ms/u/s!Am53YNAPSsodg810NxHQcrJpcNIOig?e=FRsJNR). Unzip the file and move the unzipped repository to `resources/taggers`. (We use [es_doc_ner_new.zip](https://1drv.ms/u/s!Am53YNAPSsodg9g390_8r5G101EYDQ?e=iTZLhr) instead of [doc_ner_es_best.zip](https://1drv.ms/u/s!Am53YNAPSsodg9cTi-HkIfGWHK_DPA?e=qD5BPK) because one of the embeddings from transformers is possibly trained on the test data, which results in extremely high score on the dataset.)
 
 Both of the models need the pre-extracted document-level features of `bert-spanish-cased-finetuned-ner` and `bert-base-multilingual-cased`. Pre-extracted features: [bert-spanish-cased-finetuned-ner.hdf5](https://1drv.ms/u/s!Am53YNAPSsodg9cark1_snG4kRDQ9w?e=cNb6pm) and [bert-base-multilingual-cased.hdf5](https://1drv.ms/u/s!Am53YNAPSsodg9ccJzhEa1qMDjtBDw?e=eFNYf7) (Note that [bert-base-multilingual-cased.hdf5](https://1drv.ms/u/s!Am53YNAPSsodg9ccJzhEa1qMDjtBDw?e=eFNYf7) contains the pre-extracted of all languages of CoNLL datasets, so you do not need to download it again if you already downloaded it.). If you want to extract the features by yourself, see [(Optional) Extract Document Features](https://github.com/Alibaba-NLP/ACE#optional-extract-document-features-for-bert-models) for the guide to extract the document-level features. 
 
