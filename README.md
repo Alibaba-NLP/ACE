@@ -26,7 +26,7 @@ ACE is a framework for automatically searching a good embedding concatenation fo
 
 
 ## News
- - **2022-03**: Our newest state-of-the-art NER system [KB-NER]()
+ - **2022-03**: Our newest state-of-the-art NER system [KB-NER](https://github.com/Alibaba-NLP/KB-NER) is released!
  - **2021-07**: New versions of document-level SOTA NER models are released, see [Instructions for Reproducing Results](#Instructions-for-Reproducing-Results) for more details.
 
 ## Comparison with State-of-the-Art
