@@ -26,7 +26,8 @@ ACE is a framework for automatically searching a good embedding concatenation fo
 
 
 ## News
- - **2021-07-19**: New versions of document-level SOTA NER models are released, see [Instructions for Reproducing Results](#Instructions-for-Reproducing-Results) for more details.
+ - **2022-03**: Our newest state-of-the-art NER system [KB-NER]()
+ - **2021-07**: New versions of document-level SOTA NER models are released, see [Instructions for Reproducing Results](#Instructions-for-Reproducing-Results) for more details.
 
 ## Comparison with State-of-the-Art
 
@@ -36,12 +37,12 @@ ACE is a framework for automatically searching a good embedding concatenation fo
 | Named Entity Recognition |German | CoNLL 03 (document-level)   |  **88.3** (F1) | *86.4 [(Yu et al., 2020)](https://arxiv.org/pdf/2005.07150.pdf)* |
 | Named Entity Recognition |German | CoNLL 03 (06 Revision) (document-level)   |  **91.7** (F1)   | *90.3 [(Yu et al., 2020)](https://arxiv.org/pdf/2005.07150.pdf)* |
 | Named Entity Recognition |Dutch | CoNLL 02 (document-level)   |  **95.7** (F1) | *93.7 [(Yu et al., 2020)](https://arxiv.org/pdf/2005.07150.pdf)* |
-| Named Entity Recognition |Spanish | CoNLL 02 (document-level)   |  **95.9** (F1)  | *90.3 [(Yu et al., 2020)](https://arxiv.org/pdf/2005.07150.pdf)* |
+| Named Entity Recognition |Spanish | CoNLL 02 (document-level)   |  **90.4** (F1)  | *90.3 [(Yu et al., 2020)](https://arxiv.org/pdf/2005.07150.pdf)* |
 | Named Entity Recognition |English | CoNLL 03 (sentence-level)   |  **93.6** (F1)  | *93.5 [(Baevski et al., 2019)](https://arxiv.org/pdf/1903.07785v1.pdf)* |
 | Named Entity Recognition |German | CoNLL 03 (sentence-level)   |  **87.0** (F1) | *86.4 [(Yu et al., 2020)](https://arxiv.org/pdf/2005.07150.pdf)* |
 | Named Entity Recognition |German | CoNLL 03 (06 Revision) (sentence-level)   |  **90.5** (F1)   | *90.3 [(Yu et al., 2020)](https://arxiv.org/pdf/2005.07150.pdf)* |
 | Named Entity Recognition |Dutch | CoNLL 02 (sentence-level)   |  **94.6** (F1) | *93.7 [(Yu et al., 2020)](https://arxiv.org/pdf/2005.07150.pdf)* |
-| Named Entity Recognition |Spanish | CoNLL 02 (sentence-level)   |  **91.7** (F1)  | *90.3 [(Yu et al., 2020)](https://arxiv.org/pdf/2005.07150.pdf)* |
+| Named Entity Recognition |Spanish | CoNLL 02 (sentence-level)   |  89.1 (F1)  | *90.3 [(Yu et al., 2020)](https://arxiv.org/pdf/2005.07150.pdf)* |
 | POS Tagging |English | Ritter's |  **93.4** (Acc)  | *90.1 [(Nguyen et al., 2020)](https://arxiv.org/pdf/2005.10200.pdf)* |
 | POS Tagging |English | Ark |  **94.4** (Acc)  | *94.1 [(Nguyen et al., 2020)](https://arxiv.org/pdf/2005.10200.pdf)* |
 | POS Tagging |English | TweeBank v2 |  **95.8** (Acc)  | *95.2 [(Nguyen et al., 2020)](https://arxiv.org/pdf/2005.10200.pdf)* |
