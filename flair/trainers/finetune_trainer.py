@@ -1523,7 +1523,9 @@ class ModelFinetuner(ModelDistiller):
 				if '_extdoc' in name:
 					name = name.replace('_extdoc','')
 				embedding.tokenizer = AutoTokenizer.from_pretrained(name, do_lower_case=True)
-
+			if hasattr(embedding,'model') and hasattr(embedding.model,'encoder') and not hasattr(embedding.model.encoder,'config'):
+				embedding.model.encoder.config = embedding.model.config
+		
 		if overall_test:
 			loader=ColumnDataLoader(list(self.corpus.test),eval_mini_batch_size, use_bert=self.use_bert,tokenizer=self.bert_tokenizer, model = self.model, sentence_level_batch = self.sentence_level_batch, sort_data=sort_data)
 			loader.assign_tags(self.model.tag_type,self.model.tag_dictionary)
