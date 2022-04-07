@@ -649,7 +649,7 @@ class FastCharacterEmbeddings(TokenEmbeddings):
             char_cnn_out = torch.nn.functional.max_pool1d(char_cnn_out, char_cnn_out.size(2)).view(batch_size, char_batch, -1)
             outs = char_cnn_out
         else:
-            pack_char_seqs = pack_padded_sequence(input=char_embeds, lengths=char_lengths, batch_first=False, enforce_sorted=False)
+            pack_char_seqs = pack_padded_sequence(input=char_embeds, lengths=char_lengths.to('cpu'), batch_first=False, enforce_sorted=False)
             lstm_out, hidden = self.char_layer(pack_char_seqs, None)
             # lstm_out = lstm_out.view(-1, self.hidden_dim)
             # hidden[0] = h_t = (2, b * s, 25)
