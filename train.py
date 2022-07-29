@@ -185,6 +185,27 @@ elif args.parse or args.save_embedding:
 		student = student.load(base_path / "final-model.pt")
 	else:
 		assert 0, str(base_path)+ ' not exist!'
+	for embedding in student.embeddings.embeddings:
+		# manually fix the bug for the tokenizer becoming None
+		if hasattr(embedding,'tokenizer') and embedding.tokenizer is None:
+			from transformers import AutoTokenizer
+			name = embedding.name
+			if '_v2doc' in name:
+				name = name.replace('_v2doc','')
+			if '_extdoc' in name:
+				name = name.replace('_extdoc','')
+			if 'nezha' in name:
+				# names = name.split('.flair')
+				# name = os.path.expanduser("~")+'/'+'.flair'+names[-1]
+				print(f'Loading Tokenizer: {name}')
+				from transformers import BertTokenizer
+				embedding.tokenizer = BertTokenizer.from_pretrained(name, use_fast = False)
+			else:
+				embedding.tokenizer = AutoTokenizer.from_pretrained(name, do_lower_case=True, use_fast = False)
+			# embedding.tokenizer = AutoTokenizer.from_pretrained(name, do_lower_case=True)
+			embedding.add_special_tokens
+		if hasattr(embedding,'model') and hasattr(embedding.model,'encoder') and not hasattr(embedding.model.encoder,'config'):
+			embedding.model.encoder.config = embedding.model.config
 	if trainer_name == 'ReinforcementTrainer':
 		import torch
 		training_state = torch.load(base_path/'training_state.pt')
