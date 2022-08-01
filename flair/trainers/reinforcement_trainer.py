@@ -1462,7 +1462,7 @@ class ReinforcementTrainer(ModelDistiller):
 				from transformers import AutoTokenizer
 				name = embedding.name
 				if hasattr(embedding,'model_path'):
-					named=embedding.model_path
+					name=embedding.model_path
 				if '_v2doc' in name:
 					name = name.replace('_v2doc','')
 				if '_extdoc' in name:
