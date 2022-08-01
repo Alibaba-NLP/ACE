@@ -203,7 +203,6 @@ elif args.parse or args.save_embedding:
 			else:
 				embedding.tokenizer = AutoTokenizer.from_pretrained(name, do_lower_case=True, use_fast = False)
 			# embedding.tokenizer = AutoTokenizer.from_pretrained(name, do_lower_case=True)
-			embedding.add_special_tokens
 		if hasattr(embedding,'model') and hasattr(embedding.model,'encoder') and not hasattr(embedding.model.encoder,'config'):
 			embedding.model.encoder.config = embedding.model.config
 	if trainer_name == 'ReinforcementTrainer':
