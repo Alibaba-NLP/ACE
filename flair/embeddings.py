@@ -2868,6 +2868,7 @@ class TransformerWordEmbeddings(TokenEmbeddings):
             self.name = str(model)
         else:
             self.name = embedding_name
+            self.model_path = str(model)
 
         # when initializing, embeddings are in eval mode by default
         self.model.eval()

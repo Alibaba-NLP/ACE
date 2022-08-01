@@ -1461,6 +1461,8 @@ class ReinforcementTrainer(ModelDistiller):
 			if hasattr(embedding,'tokenizer') and embedding.tokenizer is None:
 				from transformers import AutoTokenizer
 				name = embedding.name
+				if hasattr(embedding,'model_path'):
+					named=embedding.model_path
 				if '_v2doc' in name:
 					name = name.replace('_v2doc','')
 				if '_extdoc' in name:
