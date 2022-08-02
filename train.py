@@ -340,6 +340,9 @@ elif args.parse or args.save_embedding:
 					corpus=datasets.UniversalDependenciesCorpus(tar_dir,add_root=True,spliter=args.spliter)
 				else:
 					corpus=datasets.ColumnCorpus(tar_dir, column_format={0: 'text', 1:'ner'}, tag_to_bioes='ner')
+				if trainer_name == 'ReinforcementTrainer' and trainer.assign_doc_id:
+					trainer: trainer_func = trainer_func(student, None, corpus, config=config.config, **config.config[trainer_name], is_test=args.test)
+					corpus = trainer.corpus
 				tar_file_name = tar_dir.split('/')[-1]
 				print('Parsing the file: '+tar_file_name)
 				write_name='outputs/train.'+config.config['model_name']+'.'+tar_file_name+'.conllu'
@@ -355,6 +358,12 @@ elif args.parse or args.save_embedding:
 				corpus=datasets.UniversalDependenciesCorpus(args.target_dir,add_root=True,spliter=args.spliter)
 			else:
 				corpus=datasets.ColumnCorpus(args.target_dir, column_format={0: 'text', 1:'ner'}, tag_to_bioes='ner')
+			if trainer_name == 'ReinforcementTrainer' and trainer.assign_doc_id:
+					trainer: trainer_func = trainer_func(student, None, corpus, config=config.config, **config.config[trainer_name], is_test=args.test)
+					corpus = trainer.corpus
+			if trainer_name == 'ReinforcementTrainer' and trainer.assign_doc_id:
+				trainer: trainer_func = trainer_func(student, None, corpus, config=config.config, **config.config[trainer_name], is_test=args.test)
+				corpus = trainer.corpus
 			tar_file_name = str(Path(args.target_dir)).split('/')[-1]
 			loader=ColumnDataLoader(list(corpus.train),eval_mini_batch_size,use_bert=student.use_bert, model = student, sort_data = not args.keep_order, sentence_level_batch = config.config[trainer_name]['sentence_level_batch'] if 'sentence_level_batch' in config.config[trainer_name] else True)
 			loader.assign_tags(student.tag_type,student.tag_dictionary)

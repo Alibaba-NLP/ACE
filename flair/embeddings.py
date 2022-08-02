@@ -2328,6 +2328,7 @@ class FlairEmbeddings(TokenEmbeddings):
             self.name = str(model)
         if embedding_name is not None:
             self.name = embedding_name
+            self.model_path = str(model)
         
 
         # embeddings are static if we don't do finetuning
