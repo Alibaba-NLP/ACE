@@ -359,9 +359,6 @@ elif args.parse or args.save_embedding:
 			else:
 				corpus=datasets.ColumnCorpus(args.target_dir, column_format={0: 'text', 1:'ner'}, tag_to_bioes='ner')
 			if trainer_name == 'ReinforcementTrainer' and trainer.assign_doc_id:
-					trainer: trainer_func = trainer_func(student, None, corpus, config=config.config, **config.config[trainer_name], is_test=args.test)
-					corpus = trainer.corpus
-			if trainer_name == 'ReinforcementTrainer' and trainer.assign_doc_id:
 				trainer: trainer_func = trainer_func(student, None, corpus, config=config.config, **config.config[trainer_name], is_test=args.test)
 				corpus = trainer.corpus
 			tar_file_name = str(Path(args.target_dir)).split('/')[-1]
