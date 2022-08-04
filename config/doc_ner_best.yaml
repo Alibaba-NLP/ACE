@@ -35,34 +35,40 @@ chunk:
 embeddings:
   ELMoEmbeddings-0:
     model: original
+    embedding_name: elmo-original
     # options_file: elmo_2x4096_512_2048cnn_2xhighway_options.json
     # weight_file: elmo_2x4096_512_2048cnn_2xhighway_weights.hdf5
   FastWordEmbeddings-0:
     embeddings: en
     freeze: true
+    # embedding_name: 'Word: en'
   FlairEmbeddings-0:
     model: en-forward
+    embedding_name: /home/yongjiang.jy/.flair/embeddings/news-forward-0.4.1.pt
   FlairEmbeddings-1:
     model: en-backward
+    embedding_name: /home/yongjiang.jy/.flair/embeddings/news-backward-0.4.1.pt
   FlairEmbeddings-2:
     model: multi-forward
+    embedding_name: /home/yongjiang.jy/.flair/embeddings/lm-jw300-forward-v0.1.pt
   FlairEmbeddings-3:
     model: multi-backward
+    embedding_name: /home/yongjiang.jy/.flair/embeddings/lm-jw300-backward-v0.1.pt
   TransformerWordEmbeddings-0:
     layers: '-1'
-    model: xlnet-large-cased
+    model: en-xlnet-large-cased/xlnet-large-cased # the path to the fine-tuned model
     embedding_name: /home/yongjiang.jy/.flair/embeddings/xlnet-first-docv2_10epoch_1batch_4accumulate_0.000005lr_10000lrrate_eng_monolingual_nocrf_fast_norelearn_sentbatch_sentloss_finetune_nodev_saving_ner4/xlnet-large-cased
     pooling_operation: first
     v2_doc: true
   TransformerWordEmbeddings-1:
     layers: '-1'
-    model: xlm-roberta-large
+    model: en-xlm-roberta-large/xlm-roberta-large # the path to the fine-tuned model
     embedding_name: /home/yongjiang.jy/.flair/embeddings/xlmr-first-docv2_10epoch_1batch_4accumulate_0.000005lr_10000lrrate_eng_monolingual_nocrf_fast_norelearn_sentbatch_sentloss_finetune_nodev_saving_ner3/xlm-roberta-large
     pooling_operation: first
     v2_doc: true
   TransformerWordEmbeddings-2:
     layers: '-1'
-    model: roberta-large
+    model: en-roberta-large/roberta-large # the path to the fine-tuned model
     embedding_name: /home/yongjiang.jy/.flair/embeddings/en-xlmr-first-docv2_10epoch_1batch_4accumulate_0.000005lr_10000lrrate_eng_monolingual_nocrf_fast_norelearn_sentbatch_sentloss_finetune_nodev_saving_ner5/roberta-large
     pooling_operation: first
     v2_doc: true
@@ -70,6 +76,7 @@ embeddings:
     layers: -1,-2,-3,-4
     model: bert-large-cased
     pooling_operation: first
+    embedding_name: bert-large-cased
   TransformerWordEmbeddings-4:
     layers: -1,-2,-3,-4
     model: bert-base-cased
@@ -79,6 +86,7 @@ embeddings:
     layers: -1,-2,-3,-4
     model: bert-base-multilingual-cased
     pooling_operation: first
+    embedding_name: bert-base-multilingual-cased
 interpolation: 0.5
 is_teacher_list: true
 model:

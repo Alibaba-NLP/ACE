@@ -43,15 +43,19 @@ embeddings:
     freeze: true
   FlairEmbeddings-0:
     model: es-forward
+    embedding_name: /home/yongjiang.jy/.flair/embeddings/lm-es-forward.pt
   FlairEmbeddings-1:
     model: es-backward
+    embedding_name: /home/yongjiang.jy/.flair/embeddings/lm-es-backward.pt
   FlairEmbeddings-2:
     model: multi-forward
+    embedding_name: /home/yongjiang.jy/.flair/embeddings/lm-jw300-forward-v0.1.pt
   FlairEmbeddings-3:
     model: multi-backward
+    embedding_name: /home/yongjiang.jy/.flair/embeddings/lm-jw300-backward-v0.1.pt
   TransformerWordEmbeddings-0:
     layers: '-1'
-    model: xlm-roberta-large
+    model: es-xlm-roberta-large/xlm-roberta-large # the path to the fine-tuned model
     embedding_name: /home/yongjiang.jy/.flair/embeddings/xlmr-first-docv2_10epoch_1batch_4accumulate_0.000005lr_10000lrrate_es_monolingual_nocrf_fast_norelearn_sentbatch_sentloss_finetune_nodev_saving_newner3/xlm-roberta-large
     pooling_operation: first
     v2_doc: true
@@ -64,6 +68,7 @@ embeddings:
     layers: -1,-2,-3,-4
     model: bert-base-multilingual-cased
     pooling_operation: first
+    embedding_name: bert-base-multilingual-cased
 interpolation: 0.5
 is_teacher_list: true
 model:
