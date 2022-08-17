@@ -365,8 +365,8 @@ elif args.parse or args.save_embedding:
 			if student.tag_type=='dependency' or student.tag_type=='enhancedud':
 				corpus=datasets.UniversalDependenciesCorpus(args.target_dir,add_root=True,spliter=args.spliter)
 			else:
-				# corpus=datasets.ColumnCorpus(args.target_dir, column_format={0: 'text', 1:'ner'}, tag_to_bioes='ner')
-				corpus=datasets.ColumnCorpus(args.target_dir, column_format={0: 'text', 1: 'upos', 2: 'xpos', 3:'ner'}, tag_to_bioes='ner')
+				corpus=datasets.ColumnCorpus(args.target_dir, column_format={0: 'text', 1:'ner'}, tag_to_bioes='ner')
+				# corpus=datasets.ColumnCorpus(args.target_dir, column_format={0: 'text', 1: 'upos', 2: 'xpos', 3:'ner'}, tag_to_bioes='ner')
 			if trainer_name == 'ReinforcementTrainer' and 'assign_doc_id' in config.config['ReinforcementTrainer'] and config.config['ReinforcementTrainer']['assign_doc_id']:
 				corpus_data = trainer.assign_corpus(corpus = corpus.train, set_name= args.set_name, corpus_name = args.corpus_name, train_with_doc = True, pretrained_file_dict = config.config['ReinforcementTrainer']['pretrained_file_dict'])
 			tar_file_name = str(Path(args.target_dir)).split('/')[-1]
