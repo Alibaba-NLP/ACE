@@ -55,6 +55,8 @@ parser.add_argument('--test_speed', action='store_true', help='test the running 
 parser.add_argument('--predict_posterior', action='store_true', help='predict the posterior distribution of CRF model')
 parser.add_argument('--batch_size', default=-1, help='manually setting the mini batch size for testing')
 parser.add_argument('--keep_embedding', default=-1, help='mask out all embeddings except the index, for analysis')
+parser.add_argument('--corpus_name', default='conll_03_english_', help='the dataset name for get extracted features')
+parser.add_argument('--set_name', default='test_', help='the set name for get extracted features')
 
 def count_parameters(model):
 	import numpy as np
@@ -201,7 +203,12 @@ elif args.parse or args.save_embedding:
 				from transformers import BertTokenizer
 				embedding.tokenizer = BertTokenizer.from_pretrained(name, use_fast = False)
 			else:
-				embedding.tokenizer = AutoTokenizer.from_pretrained(name, do_lower_case=True, use_fast = False)
+				try:
+					embedding.tokenizer = AutoTokenizer.from_pretrained(name, use_fast = False)
+				except:
+					temp_name = name.split('/')[-1]
+					# temp_name = './'+temp_name
+					embedding.tokenizer = AutoTokenizer.from_pretrained(temp_name)
 			# embedding.tokenizer = AutoTokenizer.from_pretrained(name, do_lower_case=True)
 		if hasattr(embedding,'model') and hasattr(embedding.model,'encoder') and not hasattr(embedding.model.encoder,'config'):
 			embedding.model.encoder.config = embedding.model.config
@@ -216,19 +223,19 @@ elif args.parse or args.save_embedding:
 		embedlist = sorted([(embedding.name, embedding) for embedding in student.embeddings.embeddings], key = lambda x: x[0])
 		for idx, embedding_tuple in enumerate(embedlist):
 			embedding = embedding_tuple[1]
-			if student.selection[idx] == 1:
-				embedding.to(flair.device)
-				if 'elmo' in embedding.name:
-					# embedding.reset_elmo()
-					# continue
-					# pdb.set_trace()
-					embedding.ee.elmo_bilm.cuda(device=embedding.ee.cuda_device)
-					states=[x.to(flair.device) for x in embedding.ee.elmo_bilm._elmo_lstm._states]
-					embedding.ee.elmo_bilm._elmo_lstm._states = states
-					for idx in range(len(embedding.ee.elmo_bilm._elmo_lstm._states)):
-						embedding.ee.elmo_bilm._elmo_lstm._states[idx]=embedding.ee.elmo_bilm._elmo_lstm._states[idx].to(flair.device)
-			else:
-				embedding.to('cpu')
+			# if student.selection[idx] == 1:
+			# 	embedding.to(flair.device)
+			# 	if 'elmo' in embedding.name:
+			# 		# embedding.reset_elmo()
+			# 		# continue
+			# 		# pdb.set_trace()
+			# 		embedding.ee.elmo_bilm.cuda(device=embedding.ee.cuda_device)
+			# 		states=[x.to(flair.device) for x in embedding.ee.elmo_bilm._elmo_lstm._states]
+			# 		embedding.ee.elmo_bilm._elmo_lstm._states = states
+			# 		for idx in range(len(embedding.ee.elmo_bilm._elmo_lstm._states)):
+			# 			embedding.ee.elmo_bilm._elmo_lstm._states[idx]=embedding.ee.elmo_bilm._elmo_lstm._states[idx].to(flair.device)
+			# else:
+			embedding.to('cpu')
 				
 		for name, module in student.named_modules():
 			if 'embeddings' in name or name == '':
@@ -340,9 +347,10 @@ elif args.parse or args.save_embedding:
 					corpus=datasets.UniversalDependenciesCorpus(tar_dir,add_root=True,spliter=args.spliter)
 				else:
 					corpus=datasets.ColumnCorpus(tar_dir, column_format={0: 'text', 1:'ner'}, tag_to_bioes='ner')
-				if trainer_name == 'ReinforcementTrainer' and trainer.assign_doc_id:
-					trainer: trainer_func = trainer_func(student, None, corpus, config=config.config, **config.config[trainer_name], is_test=args.test)
-					corpus = trainer.corpus
+				if trainer_name == 'ReinforcementTrainer' and 'assign_doc_id' in config.config['ReinforcementTrainer'] and config.config['ReinforcementTrainer']['assign_doc_id']:
+					corpus_data = trainer.assign_corpus(corpus = corpus.train, set_name= args.set_name, corpus_name = args.corpus_name, train_with_doc = True, pretrained_file_dict = config.config['ReinforcementTrainer']['pretrained_file_dict'])
+					# trainer: trainer_func = trainer_func(student, None, corpus, config=config.config, **config.config[trainer_name], is_test=args.test)
+					# corpus = trainer.corpus
 				tar_file_name = tar_dir.split('/')[-1]
 				print('Parsing the file: '+tar_file_name)
 				write_name='outputs/train.'+config.config['model_name']+'.'+tar_file_name+'.conllu'
@@ -357,18 +365,21 @@ elif args.parse or args.save_embedding:
 			if student.tag_type=='dependency' or student.tag_type=='enhancedud':
 				corpus=datasets.UniversalDependenciesCorpus(args.target_dir,add_root=True,spliter=args.spliter)
 			else:
-				corpus=datasets.ColumnCorpus(args.target_dir, column_format={0: 'text', 1:'ner'}, tag_to_bioes='ner')
-			if trainer_name == 'ReinforcementTrainer' and trainer.assign_doc_id:
-				trainer: trainer_func = trainer_func(student, None, corpus, config=config.config, **config.config[trainer_name], is_test=args.test)
-				corpus = trainer.corpus
+				# corpus=datasets.ColumnCorpus(args.target_dir, column_format={0: 'text', 1:'ner'}, tag_to_bioes='ner')
+				corpus=datasets.ColumnCorpus(args.target_dir, column_format={0: 'text', 1: 'upos', 2: 'xpos', 3:'ner'}, tag_to_bioes='ner')
+			if trainer_name == 'ReinforcementTrainer' and 'assign_doc_id' in config.config['ReinforcementTrainer'] and config.config['ReinforcementTrainer']['assign_doc_id']:
+				corpus_data = trainer.assign_corpus(corpus = corpus.train, set_name= args.set_name, corpus_name = args.corpus_name, train_with_doc = True, pretrained_file_dict = config.config['ReinforcementTrainer']['pretrained_file_dict'])
 			tar_file_name = str(Path(args.target_dir)).split('/')[-1]
 			loader=ColumnDataLoader(list(corpus.train),eval_mini_batch_size,use_bert=student.use_bert, model = student, sort_data = not args.keep_order, sentence_level_batch = config.config[trainer_name]['sentence_level_batch'] if 'sentence_level_batch' in config.config[trainer_name] else True)
 			loader.assign_tags(student.tag_type,student.tag_dictionary)
-			train_eval_result, train_loss = student.evaluate(loader,out_path=Path('outputs/train.'+config.config['model_name']+'.'+tar_file_name+'.conllu'),embeddings_storage_mode="none",prediction_mode=True)
+			# train_eval_result, train_loss = student.evaluate(loader,out_path=Path('outputs/train.'+config.config['model_name']+'.'+tar_file_name+'.conllu'),embeddings_storage_mode="none",prediction_mode=True)
+			train_eval_result, train_loss = student.evaluate(loader,out_path=Path('outputs/train.'+'.'+tar_file_name+'.conllu'),embeddings_storage_mode="none",prediction_mode=True)
 			if train_eval_result is not None:
 				print('Current accuracy: ' + str(train_eval_result.main_score*100))
 				print(train_eval_result.detailed_results)
 	elif args.parse_test:
+		if trainer_name == 'ReinforcementTrainer' and 'assign_doc_id' in config.config['ReinforcementTrainer'] and config.config['ReinforcementTrainer']['assign_doc_id']:
+			corpus_data = trainer.assign_corpus(corpus = corpus.train, set_name= args.set_name, corpus_name = args.corpus_name, train_with_doc = True, pretrained_file_dict = config.config['ReinforcementTrainer']['pretrained_file_dict'])
 		loader=ColumnDataLoader(list(corpus.test),eval_mini_batch_size,use_bert=student.use_bert, model = student, sort_data = not args.keep_order, sentence_level_batch = config.config[trainer_name]['sentence_level_batch'] if 'sentence_level_batch' in config.config[trainer_name] else True)
 		loader.assign_tags(student.tag_type,student.tag_dictionary)
 		train_eval_result, train_loss = student.evaluate(loader,out_path=Path('system_pred/test.'+config.config['model_name']+'.conllu'),embeddings_storage_mode="none",prediction_mode=True)

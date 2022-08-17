@@ -1162,7 +1162,7 @@ class ModelDistiller(ModelTrainer):
 					embedding.ee.elmo_bilm._elmo_lstm._states = states
 					for idx in range(len(embedding.ee.elmo_bilm._elmo_lstm._states)):
 						embedding.ee.elmo_bilm._elmo_lstm._states[idx]=embedding.ee.elmo_bilm._elmo_lstm._states[idx].to(flair.device)
-				for loader in loaders:
+				for loader_id, loader in enumerate(loaders):
 					for sentences in loader:
 						lengths: List[int] = [len(sentence.tokens) for sentence in sentences]
 						longest_token_sequence_in_batch: int = max(lengths)

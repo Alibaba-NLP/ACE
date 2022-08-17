@@ -1503,7 +1503,6 @@ class ModelFinetuner(ModelDistiller):
 			log.info("Testing using final model ...")
 		if debug:
 			self.model.debug=True
-			
 		else:
 			self.model.debug=False
 		if nocrf:
@@ -1522,7 +1521,12 @@ class ModelFinetuner(ModelDistiller):
 					name = name.replace('_v2doc','')
 				if '_extdoc' in name:
 					name = name.replace('_extdoc','')
-				embedding.tokenizer = AutoTokenizer.from_pretrained(name, do_lower_case=True)
+				try:
+					embedding.tokenizer = AutoTokenizer.from_pretrained(name)
+				except:
+					temp_name = name.split('/')[-1]
+					# temp_name = './'+temp_name
+					embedding.tokenizer = AutoTokenizer.from_pretrained(temp_name)
 			if hasattr(embedding,'model') and hasattr(embedding.model,'encoder') and not hasattr(embedding.model.encoder,'config'):
 				embedding.model.encoder.config = embedding.model.config
 		

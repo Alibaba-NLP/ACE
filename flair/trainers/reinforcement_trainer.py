@@ -104,7 +104,7 @@ class ReinforcementTrainer(ModelDistiller):
 			self.model.use_embedding_masks = True
 		self.model.embedding_selector = True
 		self.corpus: ListCorpus = corpus
-		num_languages = len(self.corpus.targets)
+		# num_languages = len(self.corpus.targets)
 		self.controller_learning_rate=controller_learning_rate
 		self.corpus2id = {x:i for i,x in enumerate(self.corpus.targets)}
 		self.id2corpus = {i:x for i,x in enumerate(self.corpus.targets)}
@@ -823,6 +823,7 @@ class ReinforcementTrainer(ModelDistiller):
 
 					if current_score>=baseline_score:
 						log.info(f"==================Evaluating test set==================")    
+						pdb.set_trace()
 						if macro_avg:
 							
 							if type(self.corpus) is ListCorpus:
@@ -1388,7 +1389,23 @@ class ReinforcementTrainer(ModelDistiller):
 					if hasattr(self.model,'distill_rel') and self.model.distill_rel:
 						batch.teacher_features['topk_rels']=torch.stack([sentence.get_teacher_rel_target() for sentence in batch],0).cpu()
 		return loader
-		
+	def assign_corpus(self, corpus, set_name = 'test_', corpus_name = 'CONLL_03_ENGLISH', train_with_doc = True, pretrained_file_dict: dict = {}
+	):	
+		doc_sentence_dict = {}
+		doc_sentence_dict = self.assign_documents(corpus, set_name, doc_sentence_dict, corpus_name, train_with_doc)
+		new_sentences=[]
+		for sentid, sentence in enumerate(corpus):
+			if sentence[0].text=='-DOCSTART-':
+				continue
+			new_sentences.append(sentence)
+		corpus.sentences = new_sentences.copy()
+		corpus.reset_sentence_count
+			
+		for embedding in self.model.embeddings.embeddings:
+			if embedding.name in pretrained_file_dict:
+				self.assign_predicted_embeddings(doc_sentence_dict,embedding,pretrained_file_dict[embedding.name])
+		return corpus
+
 	def final_test(
 		self, base_path: Path, eval_mini_batch_size: int, num_workers: int = 8, overall_test: bool = True, quiet_mode: bool = False, nocrf: bool = False, predict_posterior: bool = False, debug: bool = False, keep_embedding: int = -1, sort_data=False, mst = False
 	):
@@ -1402,6 +1419,7 @@ class ReinforcementTrainer(ModelDistiller):
 		if quiet_mode:
 			#blockPrint()
 			log.disabled=True
+		# pdb.set_trace()
 		if (base_path / "best-model.pt").exists():
 			self.model = self.model.load(base_path / "best-model.pt", device='cpu')
 			log.info("Testing using best model ...")
@@ -1467,10 +1485,15 @@ class ReinforcementTrainer(ModelDistiller):
 					name = name.replace('_v2doc','')
 				if '_extdoc' in name:
 					name = name.replace('_extdoc','')
-				embedding.tokenizer = AutoTokenizer.from_pretrained(name, do_lower_case=True)
+				try:
+					embedding.tokenizer = AutoTokenizer.from_pretrained(name)
+				except:
+					temp_name = name.split('/')[-1]
+					# temp_name = './'+temp_name
+					embedding.tokenizer = AutoTokenizer.from_pretrained(temp_name)
 			if hasattr(embedding,'model') and hasattr(embedding.model,'encoder') and not hasattr(embedding.model.encoder,'config'):
 				embedding.model.encoder.config = embedding.model.config
-				
+		# pdb.set_trace()
 		if overall_test:
 			loader=ColumnDataLoader(list(self.corpus.test),eval_mini_batch_size, use_bert=self.use_bert,tokenizer=self.bert_tokenizer, model = self.model, sentence_level_batch = self.sentence_level_batch, sort_data=sort_data)
 			loader.assign_tags(self.model.tag_type,self.model.tag_dictionary)
@@ -1582,3 +1605,4 @@ class ReinforcementTrainer(ModelDistiller):
 
 			return final_score
 		return 0
+
