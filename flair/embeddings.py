@@ -181,9 +181,9 @@ class StackedEmbeddings(TokenEmbeddings):
             for idx, embedding_tuple in enumerate(embedlist):
                 embedding = embedding_tuple[1]
                 if embedding_mask[idx] == 1:
-                    embedding.to(flair.device)
+                    # embedding.to(flair.device)
                     embedding.embed(sentences)
-                    embedding.to('cpu')
+                    # embedding.to('cpu')
                 else:
                     embedding.assign_batch_features(sentences, assign_zero=True)
         else:
@@ -3535,7 +3535,6 @@ class TransformerWordEmbeddings(TokenEmbeddings):
         return sentences
 
     def add_document_embeddings_v2(self, sentences: List[Sentence], max_sequence_length = 510, batch_size = 32):
-        batch_size=1
         # Sentences: a group of sentences that forms a document
 
         # first, subtokenize each sentence and find out into how many subtokens each token was divided
