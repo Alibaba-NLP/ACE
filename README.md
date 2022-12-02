@@ -26,6 +26,7 @@ ACE is a framework for automatically searching a good embedding concatenation fo
 
 
 ## News
+ - **2022-11**: [AdaSeq](https://github.com/modelscope/AdaSeq): An all-in-one and easy-to-use library for developing sequence understanding models is released. 
  - **2022-03**: Our newest state-of-the-art NER system [KB-NER](https://github.com/Alibaba-NLP/KB-NER) is released!
  - **2021-07**: New versions of document-level SOTA NER models are released, see [Instructions for Reproducing Results](#Instructions-for-Reproducing-Results) for more details.
 
